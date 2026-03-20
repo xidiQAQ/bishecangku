@@ -1,0 +1,1443 @@
+================================================================================
+                    大学生心理健康关怀与预约平台
+                          需求规格说明书
+================================================================================
+
+一、项目概述
+--------------------------------------------------------------------------------
+项目名称：大学生心理健康关怀与预约平台
+技术栈：SpringBoot + Vue.js
+目标用户：大学生、心理咨询师、平台管理员
+
+项目目标：
+- 为大学生提供便捷的心理健康服务和知识获取渠道
+- 帮助心理咨询师高效管理预约和咨询记录
+- 为管理员提供统一的平台管理和数据分析工具
+
+
+二、功能需求
+--------------------------------------------------------------------------------
+
+2.1 学生端功能模块
+----------------------------------------
+
+【科普模块】
+功能描述：
+- 浏览心理健康知识文章
+  * 文章分类展示（焦虑、抑郁、人际关系、学业压力等）
+  * 文章搜索功能
+  * 文章收藏功能
+  * 阅读历史记录
+  
+- 心理测试题
+  * 提供标准化心理测评量表（如焦虑自评量表SAS、抑郁自评量表SDS等）
+  * 自动计算测试结果并给出参考建议
+  * 测试结果保存与历史查看
+  * 测试结果隐私保护
+
+【预约模块】
+功能描述：
+- 查看咨询师信息
+  * 咨询师简介（专业背景、擅长领域、工作经验）
+  * 咨询师评价与评分
+  * 咨询师可预约时间展示（日历视图）
+  
+- 在线预约
+  * 选择咨询师和时间段
+  * 填写预约信息（咨询类型、问题描述等）
+  * 预约提交与确认
+  * 预约状态查看（待确认、已确认、已完成、已取消）
+  * 预约提醒（站内消息/邮件提醒）
+  * 预约取消功能（需在规定时间前）
+
+【树洞模块】
+功能描述：
+- 匿名发布
+  * 用户可匿名发布心情、困扰等内容
+  * 支持文字内容发布
+  * 发布内容需经过审核机制
+  
+- 内容审核机制
+  * 敏感词过滤
+  * 人工审核流程
+  * 违规内容拦截与提示
+  
+- 互动功能
+  * 匿名评论与回复
+  * 点赞/支持功能
+  * 举报不当内容
+
+【个人中心】
+功能描述：
+- 个人信息管理
+- 我的预约记录
+- 我的收藏文章
+- 我的测试记录
+- 我的树洞发布
+
+
+2.2 咨询师端功能模块
+----------------------------------------
+
+【时间管理】
+功能描述：
+- 设置可预约时间表
+  * 按周设置固定时间段
+  * 临时调整特殊日期
+  * 批量设置与单独设置
+  * 时间段状态管理（可预约/已预约/休息）
+
+【预约管理】
+功能描述：
+- 查看预约列表
+  * 待确认预约
+  * 已确认预约
+  * 历史预约记录
+  * 预约详情查看
+  
+- 预约处理
+  * 确认/拒绝预约申请
+  * 预约备注信息
+  * 预约完成标记
+
+【咨询笔记】
+功能描述：
+- 记录咨询笔记（高隐私权限）
+  * 每次咨询的详细记录
+  * 学生问题分析
+  * 咨询方案与建议
+  * 后续跟进计划
+  
+- 笔记管理
+  * 按学生分类查看
+  * 笔记搜索功能
+  * 笔记加密存储
+  * 严格权限控制（仅咨询师本人可见）
+
+【个人中心】
+功能描述：
+- 个人信息与简介管理
+- 工作统计数据
+- 学生评价查看
+
+
+2.3 管理后台功能模块
+----------------------------------------
+
+【咨询师管理】
+功能描述：
+- 咨询师信息管理
+  * 添加/编辑/删除咨询师账号
+  * 咨询师资质审核
+  * 咨询师简介维护
+  * 咨询师状态管理（启用/停用）
+
+【内容管理】
+功能描述：
+- 文章管理
+  * 发布心理健康知识文章
+  * 文章分类管理
+  * 文章编辑与删除
+  * 文章发布状态控制
+  
+- 树洞内容管理
+  * 待审核内容列表
+  * 内容审核（通过/拒绝）
+  * 已发布内容管理
+  * 违规内容处理
+  * 敏感词库维护
+
+【用户管理】
+功能描述：
+- 学生用户管理
+  * 用户列表查看
+  * 用户状态管理
+  * 异常用户处理
+
+【数据统计】
+功能描述：
+- 预约数据统计
+  * 预约总量统计
+  * 预约完成率
+  * 咨询师工作量统计
+  * 预约时间段分布
+  
+- 平台使用数据
+  * 用户活跃度
+  * 文章阅读量
+  * 测试完成量
+  * 树洞发布量
+
+【系统设置】
+功能描述：
+- 平台基础配置
+- 预约规则设置
+- 通知模板管理
+
+
+三、非功能需求
+--------------------------------------------------------------------------------
+
+3.1 性能需求
+- 系统响应时间：页面加载时间 < 2秒
+- 并发支持：支持500+用户同时在线
+- 数据库查询优化：复杂查询响应时间 < 1秒
+
+3.2 安全需求
+- 用户密码加密存储
+- 咨询笔记数据加密
+- 树洞匿名性保护
+- 敏感信息脱敏处理
+- 防SQL注入、XSS攻击
+- 接口权限验证
+
+3.3 隐私保护
+- 学生个人信息保护
+- 咨询记录严格保密
+- 树洞发布完全匿名
+- 心理测试结果隐私保护
+
+3.4 可用性需求
+- 界面简洁友好
+- 操作流程清晰
+- 移动端适配
+- 浏览器兼容性（Chrome、Firefox、Safari、Edge）
+
+3.5 可维护性
+- 代码规范统一
+- 模块化设计
+- 日志记录完善
+- 异常处理机制
+
+
+四、技术架构详细设计
+--------------------------------------------------------------------------------
+
+4.1 后端架构设计
+----------------------------------------
+
+【技术栈】
+- 核心框架：Spring Boot 2.7.x
+- 数据库：MySQL 8.0
+- 缓存：Redis 6.x
+- 安全框架：Spring Security + JWT
+- ORM框架：MyBatis Plus 3.5.x
+- API文档：Swagger 3.0 / Knife4j
+- 日志框架：Logback + SLF4J
+- 工具类：Hutool、Apache Commons
+- JSON处理：Jackson
+- 参数校验：Hibernate Validator
+
+【项目结构】
+src/main/java/com/mental/health/
+├── config/                    # 配置类
+│   ├── SecurityConfig.java    # Spring Security配置
+│   ├── RedisConfig.java       # Redis配置
+│   ├── MyBatisPlusConfig.java # MyBatis Plus配置
+│   └── SwaggerConfig.java     # Swagger配置
+├── controller/                # 控制器层
+│   ├── student/               # 学生端接口
+│   ├── counselor/             # 咨询师端接口
+│   └── admin/                 # 管理端接口
+├── service/                   # 业务逻辑层
+│   ├── impl/                  # 实现类
+│   └── ...
+├── mapper/                    # 数据访问层
+├── entity/                    # 实体类
+├── dto/                       # 数据传输对象
+├── vo/                        # 视图对象
+├── common/                    # 公共模块
+│   ├── result/                # 统一返回结果
+│   ├── exception/             # 异常处理
+│   ├── constant/              # 常量定义
+│   └── utils/                 # 工具类
+├── security/                  # 安全模块
+│   ├── JwtTokenProvider.java  # JWT工具类
+│   ├── UserDetailsServiceImpl.java
+│   └── JwtAuthenticationFilter.java
+└── aspect/                    # AOP切面
+    ├── LogAspect.java         # 日志切面
+    └── PermissionAspect.java  # 权限切面
+
+【核心模块设计】
+
+1. 认证授权模块
+   - JWT Token生成与验证
+   - 用户登录/登出
+   - 角色权限管理（RBAC）
+   - 接口权限拦截
+
+2. 用户管理模块
+   - 学生用户注册/登录
+   - 咨询师账号管理
+   - 管理员账号管理
+   - 用户信息维护
+
+3. 文章管理模块
+   - 文章CRUD操作
+   - 文章分类管理
+   - 文章搜索（支持全文检索）
+   - 文章收藏功能
+
+4. 心理测试模块
+   - 测试题库管理
+   - 测试答题逻辑
+   - 自动评分算法
+   - 测试结果分析
+
+5. 预约管理模块
+   - 咨询师时间表管理
+   - 预约创建与确认
+   - 预约状态流转
+   - 预约冲突检测
+   - 预约提醒（定时任务）
+
+6. 咨询笔记模块
+   - 笔记加密存储（AES-256）
+   - 笔记权限控制
+   - 笔记检索功能
+
+7. 树洞模块
+   - 匿名内容发布
+   - 敏感词过滤（DFA算法）
+   - 内容审核流程
+   - 评论互动功能
+
+8. 数据统计模块
+   - 预约数据统计
+   - 用户行为分析
+   - 报表生成
+
+【API接口设计规范】
+
+RESTful API设计：
+- GET：查询操作
+- POST：创建操作
+- PUT：更新操作
+- DELETE：删除操作
+
+统一返回格式：
+{
+  "code": 200,           // 状态码
+  "message": "success",  // 提示信息
+  "data": {},            // 返回数据
+  "timestamp": 1234567890 // 时间戳
+}
+
+接口路径规范：
+- 学生端：/api/student/**
+- 咨询师端：/api/counselor/**
+- 管理端：/api/admin/**
+
+【核心接口列表】
+
+学生端接口：
+POST   /api/student/auth/login          # 学生登录
+POST   /api/student/auth/register       # 学生注册
+GET    /api/student/articles            # 获取文章列表
+GET    /api/student/articles/{id}       # 获取文章详情
+POST   /api/student/articles/collect    # 收藏文章
+GET    /api/student/tests               # 获取测试列表
+POST   /api/student/tests/submit        # 提交测试答案
+GET    /api/student/counselors          # 获取咨询师列表
+GET    /api/student/counselors/{id}/schedule  # 获取咨询师时间表
+POST   /api/student/appointments        # 创建预约
+GET    /api/student/appointments        # 获取我的预约
+DELETE /api/student/appointments/{id}   # 取消预约
+POST   /api/student/moments             # 发布树洞
+GET    /api/student/moments             # 获取树洞列表
+POST   /api/student/moments/{id}/comment # 评论树洞
+
+咨询师端接口：
+POST   /api/counselor/auth/login        # 咨询师登录
+GET    /api/counselor/schedule          # 获取我的时间表
+POST   /api/counselor/schedule          # 设置时间表
+GET    /api/counselor/appointments      # 获取预约列表
+PUT    /api/counselor/appointments/{id}/confirm  # 确认预约
+PUT    /api/counselor/appointments/{id}/reject   # 拒绝预约
+POST   /api/counselor/notes             # 创建咨询笔记
+GET    /api/counselor/notes             # 获取咨询笔记列表
+GET    /api/counselor/notes/{id}        # 获取笔记详情
+
+管理端接口：
+POST   /api/admin/auth/login            # 管理员登录
+GET    /api/admin/counselors            # 获取咨询师列表
+POST   /api/admin/counselors            # 添加咨询师
+PUT    /api/admin/counselors/{id}       # 更新咨询师信息
+DELETE /api/admin/counselors/{id}       # 删除咨询师
+POST   /api/admin/articles              # 发布文章
+PUT    /api/admin/articles/{id}         # 更新文章
+DELETE /api/admin/articles/{id}         # 删除文章
+GET    /api/admin/moments/pending       # 获取待审核树洞
+PUT    /api/admin/moments/{id}/approve  # 审核通过
+PUT    /api/admin/moments/{id}/reject   # 审核拒绝
+GET    /api/admin/statistics/appointments # 预约统计数据
+GET    /api/admin/statistics/users      # 用户统计数据
+
+
+4.2 前端架构设计
+----------------------------------------
+
+【技术栈】
+- 核心框架：Vue 3.3.x (Composition API)
+- 构建工具：Vite 4.x
+- UI组件库：Element Plus 2.x
+- 状态管理：Pinia 2.x
+- 路由管理：Vue Router 4.x
+- HTTP客户端：Axios
+- CSS预处理器：SCSS
+- 代码规范：ESLint + Prettier
+- 图表库：ECharts 5.x
+- 富文本编辑器：Quill / TinyMCE
+- 日期处理：Day.js
+- 工具库：Lodash
+
+【项目结构】
+src/
+├── assets/                    # 静态资源
+│   ├── images/
+│   ├── styles/
+│   │   ├── variables.scss     # SCSS变量
+│   │   ├── mixins.scss        # SCSS混入
+│   │   └── common.scss        # 公共样式
+│   └── icons/
+├── components/                # 公共组件
+│   ├── Layout/                # 布局组件
+│   │   ├── Header.vue
+│   │   ├── Sidebar.vue
+│   │   └── Footer.vue
+│   ├── Common/                # 通用组件
+│   │   ├── Pagination.vue
+│   │   ├── SearchBar.vue
+│   │   └── UploadImage.vue
+│   └── Business/              # 业务组件
+│       ├── ArticleCard.vue
+│       ├── CounselorCard.vue
+│       └── AppointmentCalendar.vue
+├── views/                     # 页面视图
+│   ├── student/               # 学生端页面
+│   │   ├── Home.vue
+│   │   ├── Articles.vue
+│   │   ├── ArticleDetail.vue
+│   │   ├── Tests.vue
+│   │   ├── TestDetail.vue
+│   │   ├── Counselors.vue
+│   │   ├── Appointment.vue
+│   │   ├── Moments.vue
+│   │   └── Profile.vue
+│   ├── counselor/             # 咨询师端页面
+│   │   ├── Dashboard.vue
+│   │   ├── Schedule.vue
+│   │   ├── Appointments.vue
+│   │   ├── Notes.vue
+│   │   └── Profile.vue
+│   └── admin/                 # 管理端页面
+│       ├── Dashboard.vue
+│       ├── Counselors.vue
+│       ├── Articles.vue
+│       ├── Moments.vue
+│       ├── Users.vue
+│       └── Statistics.vue
+├── router/                    # 路由配置
+│   ├── index.js
+│   ├── student.js
+│   ├── counselor.js
+│   └── admin.js
+├── stores/                    # Pinia状态管理
+│   ├── user.js                # 用户状态
+│   ├── article.js             # 文章状态
+│   ├── appointment.js         # 预约状态
+│   └── moment.js              # 树洞状态
+├── api/                       # API接口封装
+│   ├── request.js             # Axios封装
+│   ├── student.js             # 学生端接口
+│   ├── counselor.js           # 咨询师端接口
+│   └── admin.js               # 管理端接口
+├── utils/                     # 工具函数
+│   ├── auth.js                # 认证工具
+│   ├── storage.js             # 本地存储
+│   ├── validate.js            # 表单验证
+│   └── format.js              # 格式化工具
+├── directives/                # 自定义指令
+├── plugins/                   # 插件
+└── App.vue                    # 根组件
+
+【核心功能实现】
+
+1. 路由守卫
+   - 登录状态验证
+   - 角色权限验证
+   - 页面访问控制
+
+2. 状态管理
+   - 用户信息管理
+   - Token管理
+   - 全局配置管理
+
+3. HTTP请求封装
+   - 请求拦截器（添加Token）
+   - 响应拦截器（统一错误处理）
+   - 请求取消机制
+   - 请求重试机制
+
+4. 权限控制
+   - 按钮级权限控制
+   - 路由级权限控制
+   - 动态菜单生成
+
+【页面设计要点】
+
+学生端：
+- 首页：展示推荐文章、快速预约入口
+- 文章列表：分类筛选、搜索、分页
+- 文章详情：富文本展示、收藏、相关推荐
+- 心理测试：题目展示、进度条、结果分析
+- 咨询师列表：卡片展示、筛选、评分
+- 预约页面：日历选择、时间段选择、表单填写
+- 树洞：瀑布流展示、匿名发布、评论互动
+
+咨询师端：
+- 工作台：今日预约、待处理事项
+- 时间管理：日历视图、批量设置
+- 预约管理：列表展示、状态筛选、详情查看
+- 咨询笔记：富文本编辑、分类管理、搜索
+
+管理后台：
+- 数据看板：关键指标、图表展示
+- 咨询师管理：表格展示、CRUD操作
+- 文章管理：富文本编辑、分类管理
+- 树洞审核：待审核列表、快速审核
+- 数据统计：多维度图表、数据导出
+
+
+4.3 部署架构
+----------------------------------------
+
+【服务器配置】
+- 操作系统：CentOS 7.x / Ubuntu 20.04
+- Web服务器：Nginx 1.20+
+- 应用服务器：Tomcat 9.x（内嵌）
+- 数据库服务器：MySQL 8.0
+- 缓存服务器：Redis 6.x
+- JDK版本：JDK 11 / JDK 17
+
+【Nginx配置要点】
+- 反向代理配置
+- 负载均衡（可选）
+- 静态资源缓存
+- Gzip压缩
+- HTTPS配置（SSL证书）
+- 跨域配置
+
+【Docker部署（可选）】
+- 后端服务容器
+- MySQL容器
+- Redis容器
+- Nginx容器
+- Docker Compose编排
+
+【部署流程】
+1. 前端构建：npm run build
+2. 后端打包：mvn clean package
+3. 上传服务器
+4. 配置Nginx
+5. 启动应用
+6. 健康检查
+
+
+五、数据库详细设计
+--------------------------------------------------------------------------------
+
+5.1 数据库设计原则
+----------------------------------------
+- 遵循第三范式（3NF）
+- 合理使用索引提升查询性能
+- 敏感数据加密存储
+- 软删除机制（deleted字段）
+- 统一时间戳字段（created_at, updated_at）
+- 统一主键策略（雪花算法生成ID）
+
+
+5.2 核心数据表设计
+----------------------------------------
+
+【1. 用户表 sys_user】
+字段说明：
+- id (BIGINT, PK)：用户ID，雪花算法生成
+- username (VARCHAR(50), UNIQUE)：用户名
+- password (VARCHAR(255))：密码，BCrypt加密
+- real_name (VARCHAR(50))：真实姓名
+- phone (VARCHAR(20), UNIQUE)：手机号
+- email (VARCHAR(100))：邮箱
+- avatar (VARCHAR(255))：头像URL
+- gender (TINYINT)：性别 0-未知 1-男 2-女
+- user_type (TINYINT)：用户类型 1-学生 2-咨询师 3-管理员
+- status (TINYINT)：状态 0-禁用 1-正常
+- last_login_time (DATETIME)：最后登录时间
+- last_login_ip (VARCHAR(50))：最后登录IP
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除 0-否 1-是
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_username (username)
+- UNIQUE KEY uk_phone (phone)
+- INDEX idx_user_type (user_type)
+- INDEX idx_status (status)
+
+
+【2. 咨询师信息表 counselor_info】
+字段说明：
+- id (BIGINT, PK)：主键ID
+- user_id (BIGINT, FK)：关联用户表ID
+- title (VARCHAR(50))：职称（如：国家二级心理咨询师）
+- specialty (VARCHAR(500))：擅长领域（JSON格式存储数组）
+- introduction (TEXT)：个人简介
+- education (VARCHAR(200))：教育背景
+- experience (TEXT)：工作经验
+- certificate (VARCHAR(500))：资质证书（JSON格式）
+- rating (DECIMAL(3,2))：评分 0.00-5.00
+- rating_count (INT)：评价数量
+- appointment_count (INT)：预约总数
+- completed_count (INT)：完成咨询数
+- status (TINYINT)：状态 0-待审核 1-正常 2-停用
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_user_id (user_id)
+- INDEX idx_status (status)
+- INDEX idx_rating (rating)
+
+
+【3. 文章分类表 article_category】
+字段说明：
+- id (BIGINT, PK)：分类ID
+- name (VARCHAR(50))：分类名称
+- description (VARCHAR(200))：分类描述
+- sort_order (INT)：排序号
+- status (TINYINT)：状态 0-禁用 1-启用
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_sort_order (sort_order)
+
+
+【4. 文章表 article】
+字段说明：
+- id (BIGINT, PK)：文章ID
+- category_id (BIGINT, FK)：分类ID
+- title (VARCHAR(200))：文章标题
+- summary (VARCHAR(500))：文章摘要
+- content (LONGTEXT)：文章内容（富文本）
+- cover_image (VARCHAR(255))：封面图片URL
+- author (VARCHAR(50))：作者
+- view_count (INT)：浏览次数
+- collect_count (INT)：收藏次数
+- status (TINYINT)：状态 0-草稿 1-已发布 2-下架
+- publish_time (DATETIME)：发布时间
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_category_id (category_id)
+- INDEX idx_status (status)
+- INDEX idx_publish_time (publish_time)
+- FULLTEXT INDEX ft_title_content (title, content)  # 全文索引
+
+
+【5. 文章收藏表 article_collect】
+字段说明：
+- id (BIGINT, PK)：主键ID
+- user_id (BIGINT, FK)：用户ID
+- article_id (BIGINT, FK)：文章ID
+- created_at (DATETIME)：收藏时间
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_user_article (user_id, article_id)
+- INDEX idx_user_id (user_id)
+- INDEX idx_article_id (article_id)
+
+
+【6. 心理测试表 psychological_test】
+字段说明：
+- id (BIGINT, PK)：测试ID
+- name (VARCHAR(100))：测试名称
+- description (TEXT)：测试说明
+- test_type (VARCHAR(50))：测试类型（SAS/SDS/SCL-90等）
+- total_questions (INT)：题目总数
+- time_limit (INT)：时间限制（分钟）
+- cover_image (VARCHAR(255))：封面图
+- status (TINYINT)：状态 0-禁用 1-启用
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_test_type (test_type)
+- INDEX idx_status (status)
+
+
+【7. 测试题目表 test_question】
+字段说明：
+- id (BIGINT, PK)：题目ID
+- test_id (BIGINT, FK)：测试ID
+- question_no (INT)：题号
+- question_text (TEXT)：题目内容
+- options (TEXT)：选项（JSON格式）
+  示例：[{"key":"A","value":"从不","score":1},{"key":"B","value":"有时","score":2}]
+- question_type (TINYINT)：题型 1-单选 2-多选
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_test_id (test_id)
+- INDEX idx_question_no (question_no)
+
+
+【8. 测试结果表 test_result】
+字段说明：
+- id (BIGINT, PK)：结果ID
+- user_id (BIGINT, FK)：用户ID
+- test_id (BIGINT, FK)：测试ID
+- answers (TEXT)：答案（JSON格式）
+  示例：[{"question_id":1,"answer":"A","score":1}]
+- total_score (INT)：总分
+- result_level (VARCHAR(20))：结果等级（正常/轻度/中度/重度）
+- result_analysis (TEXT)：结果分析
+- suggestions (TEXT)：建议
+- test_duration (INT)：测试用时（秒）
+- created_at (DATETIME)：测试时间
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_user_id (user_id)
+- INDEX idx_test_id (test_id)
+- INDEX idx_created_at (created_at)
+
+
+【9. 咨询师时间表 counselor_schedule】
+字段说明：
+- id (BIGINT, PK)：主键ID
+- counselor_id (BIGINT, FK)：咨询师ID
+- schedule_date (DATE)：日期
+- time_slot (VARCHAR(20))：时间段（如：09:00-10:00）
+- status (TINYINT)：状态 0-休息 1-可预约 2-已预约 3-已完成
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_counselor_date_time (counselor_id, schedule_date, time_slot)
+- INDEX idx_counselor_id (counselor_id)
+- INDEX idx_schedule_date (schedule_date)
+- INDEX idx_status (status)
+
+
+【10. 预约记录表 appointment】
+字段说明：
+- id (BIGINT, PK)：预约ID
+- appointment_no (VARCHAR(32), UNIQUE)：预约编号
+- student_id (BIGINT, FK)：学生ID
+- counselor_id (BIGINT, FK)：咨询师ID
+- schedule_id (BIGINT, FK)：时间表ID
+- appointment_date (DATE)：预约日期
+- time_slot (VARCHAR(20))：时间段
+- consult_type (VARCHAR(50))：咨询类型（情感/学业/人际等）
+- problem_desc (TEXT)：问题描述
+- status (TINYINT)：状态 0-待确认 1-已确认 2-已完成 3-已取消 4-已拒绝
+- cancel_reason (VARCHAR(500))：取消/拒绝原因
+- student_remark (VARCHAR(500))：学生备注
+- counselor_remark (VARCHAR(500))：咨询师备注
+- rating (TINYINT)：学生评分 1-5星
+- comment (TEXT)：学生评价
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_appointment_no (appointment_no)
+- INDEX idx_student_id (student_id)
+- INDEX idx_counselor_id (counselor_id)
+- INDEX idx_schedule_id (schedule_id)
+- INDEX idx_appointment_date (appointment_date)
+- INDEX idx_status (status)
+
+
+【11. 咨询笔记表 counseling_note】（高安全级别）
+字段说明：
+- id (BIGINT, PK)：笔记ID
+- appointment_id (BIGINT, FK)：预约ID
+- counselor_id (BIGINT, FK)：咨询师ID
+- student_id (BIGINT, FK)：学生ID（冗余字段，便于查询）
+- note_content (TEXT)：笔记内容（AES-256加密存储）
+- problem_analysis (TEXT)：问题分析（加密）
+- counseling_plan (TEXT)：咨询方案（加密）
+- follow_up_plan (TEXT)：后续跟进计划（加密）
+- next_appointment (DATE)：下次预约建议日期
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_appointment_id (appointment_id)
+- INDEX idx_counselor_id (counselor_id)
+- INDEX idx_student_id (student_id)
+
+安全措施：
+- 所有文本字段使用AES-256加密
+- 仅咨询师本人可访问
+- 数据库层面权限隔离
+- 操作日志记录
+
+
+【12. 树洞内容表 moment】
+字段说明：
+- id (BIGINT, PK)：内容ID
+- user_id (BIGINT, FK)：用户ID（系统记录，不对外展示）
+- anonymous_id (VARCHAR(32))：匿名ID（对外展示）
+- content (TEXT)：内容
+- image_urls (TEXT)：图片URL（JSON数组）
+- like_count (INT)：点赞数
+- comment_count (INT)：评论数
+- audit_status (TINYINT)：审核状态 0-待审核 1-已通过 2-已拒绝
+- audit_reason (VARCHAR(500))：审核意见
+- auditor_id (BIGINT)：审核人ID
+- audit_time (DATETIME)：审核时间
+- status (TINYINT)：状态 0-隐藏 1-正常
+- created_at (DATETIME)：发布时间
+- updated_at (DATETIME)：更新时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_user_id (user_id)
+- INDEX idx_audit_status (audit_status)
+- INDEX idx_status (status)
+- INDEX idx_created_at (created_at)
+
+
+【13. 树洞评论表 moment_comment】
+字段说明：
+- id (BIGINT, PK)：评论ID
+- moment_id (BIGINT, FK)：树洞内容ID
+- user_id (BIGINT, FK)：用户ID
+- anonymous_id (VARCHAR(32))：匿名ID
+- parent_id (BIGINT)：父评论ID（0表示一级评论）
+- content (TEXT)：评论内容
+- like_count (INT)：点赞数
+- status (TINYINT)：状态 0-隐藏 1-正常
+- created_at (DATETIME)：评论时间
+- deleted (TINYINT)：是否删除
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_moment_id (moment_id)
+- INDEX idx_user_id (user_id)
+- INDEX idx_parent_id (parent_id)
+- INDEX idx_created_at (created_at)
+
+
+【14. 敏感词表 sensitive_word】
+字段说明：
+- id (BIGINT, PK)：主键ID
+- word (VARCHAR(100), UNIQUE)：敏感词
+- level (TINYINT)：级别 1-警告 2-拦截
+- category (VARCHAR(50))：分类
+- status (TINYINT)：状态 0-禁用 1-启用
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_word (word)
+- INDEX idx_level (level)
+
+
+【15. 系统配置表 sys_config】
+字段说明：
+- id (BIGINT, PK)：配置ID
+- config_key (VARCHAR(100), UNIQUE)：配置键
+- config_value (TEXT)：配置值
+- config_desc (VARCHAR(200))：配置说明
+- config_type (VARCHAR(20))：配置类型（string/number/json）
+- created_at (DATETIME)：创建时间
+- updated_at (DATETIME)：更新时间
+
+索引：
+- PRIMARY KEY (id)
+- UNIQUE KEY uk_config_key (config_key)
+
+
+【16. 操作日志表 sys_log】
+字段说明：
+- id (BIGINT, PK)：日志ID
+- user_id (BIGINT)：操作用户ID
+- username (VARCHAR(50))：用户名
+- operation (VARCHAR(100))：操作描述
+- method (VARCHAR(200))：请求方法
+- params (TEXT)：请求参数
+- ip (VARCHAR(50))：IP地址
+- location (VARCHAR(100))：操作地点
+- execute_time (INT)：执行时长（毫秒）
+- created_at (DATETIME)：操作时间
+
+索引：
+- PRIMARY KEY (id)
+- INDEX idx_user_id (user_id)
+- INDEX idx_created_at (created_at)
+
+
+5.3 数据库关系图
+----------------------------------------
+
+用户表 (sys_user) 1:1 咨询师信息表 (counselor_info)
+用户表 (sys_user) 1:N 文章收藏表 (article_collect)
+用户表 (sys_user) 1:N 测试结果表 (test_result)
+用户表 (sys_user) 1:N 预约记录表 (appointment)
+用户表 (sys_user) 1:N 树洞内容表 (moment)
+用户表 (sys_user) 1:N 树洞评论表 (moment_comment)
+
+文章分类表 (article_category) 1:N 文章表 (article)
+文章表 (article) 1:N 文章收藏表 (article_collect)
+
+心理测试表 (psychological_test) 1:N 测试题目表 (test_question)
+心理测试表 (psychological_test) 1:N 测试结果表 (test_result)
+
+咨询师信息表 (counselor_info) 1:N 咨询师时间表 (counselor_schedule)
+咨询师信息表 (counselor_info) 1:N 预约记录表 (appointment)
+咨询师信息表 (counselor_info) 1:N 咨询笔记表 (counseling_note)
+
+咨询师时间表 (counselor_schedule) 1:1 预约记录表 (appointment)
+预约记录表 (appointment) 1:1 咨询笔记表 (counseling_note)
+
+树洞内容表 (moment) 1:N 树洞评论表 (moment_comment)
+
+
+5.4 数据库性能优化建议
+----------------------------------------
+
+1. 索引优化
+   - 为高频查询字段建立索引
+   - 使用复合索引优化多条件查询
+   - 定期分析慢查询日志
+
+2. 分表策略（可选）
+   - 操作日志表按月分表
+   - 测试结果表按年分表
+
+3. 缓存策略
+   - 文章列表使用Redis缓存
+   - 咨询师信息使用Redis缓存
+   - 热门树洞内容缓存
+
+4. 读写分离（可选）
+   - 主库负责写操作
+   - 从库负责读操作
+
+5. 数据归档
+   - 定期归档历史数据
+   - 保留近2年活跃数据
+
+
+六、开发计划建议
+--------------------------------------------------------------------------------
+
+第一阶段：基础功能开发
+- 用户认证与权限管理
+- 学生端科普模块
+- 咨询师信息展示
+
+第二阶段：核心功能开发
+- 预约功能完整实现
+- 咨询师端时间与预约管理
+- 管理后台基础功能
+
+第三阶段：扩展功能开发
+- 树洞模块与审核机制
+- 心理测试功能
+- 数据统计与分析
+
+第四阶段：优化与测试
+- 性能优化
+- 安全加固
+- 全面测试
+- 用户体验优化
+
+
+七、风险与注意事项
+--------------------------------------------------------------------------------
+
+1. 隐私保护风险
+   - 必须严格保护用户隐私数据
+   - 咨询笔记需要最高级别的安全保护
+   - 树洞匿名性不可被破解
+
+2. 内容审核风险
+   - 需要完善的敏感词库
+   - 建立快速响应的人工审核机制
+   - 防止不当内容传播
+
+3. 预约冲突处理
+   - 需要防止重复预约
+   - 时间段锁定机制
+   - 并发预约处理
+
+4. 数据备份
+   - 定期数据备份
+   - 灾难恢复方案
+
+================================================================================
+                              文档结束
+================================================================================
+
+
+八、关键业务逻辑说明
+--------------------------------------------------------------------------------
+
+8.1 用户认证与授权流程
+----------------------------------------
+
+【登录流程】
+1. 用户提交用户名/手机号 + 密码
+2. 后端验证用户信息
+3. 验证通过后生成JWT Token（有效期24小时）
+4. 返回Token和用户基本信息
+5. 前端存储Token到localStorage
+6. 后续请求在Header中携带Token
+
+【Token刷新机制】
+- Access Token：24小时有效期
+- Refresh Token：7天有效期
+- Token过期前30分钟自动刷新
+
+【权限验证】
+- 基于角色的访问控制（RBAC）
+- 学生只能访问学生端接口
+- 咨询师只能访问咨询师端接口
+- 管理员可访问管理端接口
+- 使用Spring Security拦截器实现
+
+
+8.2 预约业务流程
+----------------------------------------
+
+【预约创建流程】
+1. 学生选择咨询师和时间段
+2. 系统检查时间段是否可预约（状态=1）
+3. 使用数据库行锁防止并发预约
+4. 创建预约记录（状态=待确认）
+5. 更新时间表状态为"已预约"
+6. 发送通知给咨询师
+
+【预约确认流程】
+1. 咨询师查看待确认预约
+2. 咨询师确认或拒绝预约
+3. 更新预约状态
+4. 发送通知给学生
+
+【预约取消规则】
+- 学生可在预约时间24小时前取消
+- 取消后时间段状态恢复为"可预约"
+- 24小时内不可取消
+
+【预约完成流程】
+1. 预约时间到达后，咨询师标记为完成
+2. 学生可进行评价（评分+评论）
+3. 更新咨询师评分统计
+
+
+8.3 树洞审核机制
+----------------------------------------
+
+【发布流程】
+1. 学生提交树洞内容
+2. 系统自动敏感词过滤（DFA算法）
+3. 如包含拦截级敏感词，直接拒绝
+4. 如包含警告级敏感词，标记待人工审核
+5. 无敏感词的内容自动通过
+
+【审核流程】
+1. 管理员查看待审核列表
+2. 审核通过/拒绝并填写原因
+3. 通过的内容对外展示
+4. 拒绝的内容通知用户
+
+【匿名ID生成规则】
+- 每个用户每天生成一个新的匿名ID
+- 格式：anonymous_yyyyMMdd_随机6位
+- 保证同一天内同一用户的匿名ID一致
+
+
+8.4 心理测试评分算法
+----------------------------------------
+
+【SAS焦虑自评量表】
+- 20道题，每题1-4分
+- 总分 = 各题得分之和 × 1.25
+- 评分标准：
+  * <50分：正常
+  * 50-59分：轻度焦虑
+  * 60-69分：中度焦虑
+  * ≥70分：重度焦虑
+
+【SDS抑郁自评量表】
+- 20道题，每题1-4分
+- 总分 = 各题得分之和 × 1.25
+- 评分标准：
+  * <53分：正常
+  * 53-62分：轻度抑郁
+  * 63-72分：中度抑郁
+  * ≥73分：重度抑郁
+
+
+8.5 数据加密方案
+----------------------------------------
+
+【密码加密】
+- 使用BCrypt算法
+- 自动加盐
+- 不可逆加密
+
+【咨询笔记加密】
+- 使用AES-256算法
+- 密钥存储在配置文件（生产环境使用密钥管理服务）
+- 加密字段：note_content, problem_analysis, counseling_plan, follow_up_plan
+
+【树洞匿名保护】
+- 真实user_id不对外暴露
+- 仅展示anonymous_id
+- 管理员可追溯真实用户（用于违规处理）
+
+
+九、开发环境配置指南
+--------------------------------------------------------------------------------
+
+9.1 后端环境配置
+----------------------------------------
+
+【必需软件】
+- JDK 11 或 JDK 17
+- Maven 3.6+
+- MySQL 8.0
+- Redis 6.x
+- IDE：IntelliJ IDEA（推荐）
+
+【application.yml 配置示例】
+```yaml
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mental_health?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: your_password
+  
+  redis:
+    host: localhost
+    port: 6379
+    password: 
+    database: 0
+  
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.mental.health.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  secret: your-secret-key-here-change-in-production
+  expiration: 86400000  # 24小时
+  refresh-expiration: 604800000  # 7天
+```
+
+【pom.xml 核心依赖】
+```xml
+<dependencies>
+    <!-- Spring Boot -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    
+    <!-- JWT -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>0.9.1</version>
+    </dependency>
+    
+    <!-- MyBatis Plus -->
+    <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>3.5.3</version>
+    </dependency>
+    
+    <!-- MySQL -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.33</version>
+    </dependency>
+    
+    <!-- Redis -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    
+    <!-- Swagger -->
+    <dependency>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>knife4j-spring-boot-starter</artifactId>
+        <version>3.0.3</version>
+    </dependency>
+    
+    <!-- Hutool -->
+    <dependency>
+        <groupId>cn.hutool</groupId>
+        <artifactId>hutool-all</artifactId>
+        <version>5.8.20</version>
+    </dependency>
+    
+    <!-- Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+```
+
+
+9.2 前端环境配置
+----------------------------------------
+
+【必需软件】
+- Node.js 16+ 或 18+
+- npm 8+ 或 pnpm（推荐）
+- IDE：VS Code（推荐）
+
+【package.json 核心依赖】
+```json
+{
+  "dependencies": {
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "pinia": "^2.1.6",
+    "element-plus": "^2.3.12",
+    "axios": "^1.5.0",
+    "echarts": "^5.4.3",
+    "dayjs": "^1.11.9",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.4",
+    "vite": "^4.4.9",
+    "sass": "^1.66.1",
+    "eslint": "^8.48.0",
+    "prettier": "^3.0.3"
+  }
+}
+```
+
+【vite.config.js 配置示例】
+```javascript
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    }
+  }
+})
+```
+
+【.env 环境变量】
+```
+# 开发环境
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_APP_TITLE=心理健康关怀平台
+
+# 生产环境
+VITE_API_BASE_URL=https://your-domain.com/api
+```
+
+
+9.3 数据库初始化
+----------------------------------------
+
+【创建数据库】
+```sql
+CREATE DATABASE mental_health 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+```
+
+【执行建表SQL】
+按照第五章的表结构创建所有数据表
+
+【初始化数据】
+```sql
+-- 插入管理员账号
+INSERT INTO sys_user (id, username, password, real_name, user_type, status, created_at, updated_at, deleted)
+VALUES (1, 'admin', '$2a$10$encrypted_password', '系统管理员', 3, 1, NOW(), NOW(), 0);
+
+-- 插入文章分类
+INSERT INTO article_category (name, description, sort_order, status, created_at, updated_at, deleted)
+VALUES 
+('焦虑情绪', '关于焦虑情绪的心理知识', 1, 1, NOW(), NOW(), 0),
+('抑郁情绪', '关于抑郁情绪的心理知识', 2, 1, NOW(), NOW(), 0),
+('人际关系', '关于人际交往的心理知识', 3, 1, NOW(), NOW(), 0),
+('学业压力', '关于学业压力的心理知识', 4, 1, NOW(), NOW(), 0);
+
+-- 插入系统配置
+INSERT INTO sys_config (config_key, config_value, config_desc, config_type, created_at, updated_at)
+VALUES 
+('appointment.cancel.hours', '24', '预约取消提前小时数', 'number', NOW(), NOW()),
+('moment.auto.audit', 'true', '树洞内容是否自动审核', 'string', NOW(), NOW());
+```
+
+
+十、测试策略
+--------------------------------------------------------------------------------
+
+10.1 单元测试
+- 使用JUnit 5 + Mockito
+- Service层业务逻辑测试
+- 工具类测试
+- 覆盖率目标：>70%
+
+10.2 接口测试
+- 使用Postman或Apifox
+- 测试所有API接口
+- 验证参数校验
+- 验证权限控制
+
+10.3 前端测试
+- 使用Vitest
+- 组件单元测试
+- 工具函数测试
+
+10.4 集成测试
+- 完整业务流程测试
+- 预约流程端到端测试
+- 树洞发布审核流程测试
+
+10.5 性能测试
+- 使用JMeter
+- 并发预约测试
+- 接口响应时间测试
+- 数据库查询性能测试
+
+
+十一、部署上线检查清单
+--------------------------------------------------------------------------------
+
+【代码层面】
+□ 移除所有console.log和调试代码
+□ 移除测试数据和Mock数据
+□ 检查所有TODO和FIXME
+□ 代码格式化和规范检查
+
+【配置层面】
+□ 修改数据库连接为生产环境
+□ 修改Redis连接为生产环境
+□ 更换JWT密钥
+□ 配置HTTPS证书
+□ 配置跨域白名单
+□ 关闭Swagger文档（生产环境）
+
+【安全层面】
+□ 密码强度验证
+□ SQL注入防护测试
+□ XSS攻击防护测试
+□ CSRF防护配置
+□ 敏感信息脱敏
+□ 接口限流配置
+
+【性能层面】
+□ 数据库索引优化
+□ Redis缓存配置
+□ 静态资源CDN配置
+□ Gzip压缩开启
+□ 图片压缩优化
+
+【监控层面】
+□ 日志收集配置
+□ 错误监控配置
+□ 性能监控配置
+□ 数据库备份策略
+□ 服务器监控告警
+
+
+十二、常见问题与解决方案
+--------------------------------------------------------------------------------
+
+12.1 并发预约冲突
+问题：多个学生同时预约同一时间段
+解决：使用数据库悲观锁（SELECT FOR UPDATE）
+
+12.2 Token过期处理
+问题：Token过期后用户体验差
+解决：实现Token自动刷新机制，前端拦截器处理
+
+12.3 树洞匿名性泄露
+问题：通过发布时间等信息推测用户身份
+解决：发布时间模糊化处理（精确到小时）
+
+12.4 咨询笔记数据安全
+问题：数据库泄露导致隐私泄露
+解决：AES-256加密 + 数据库权限隔离 + 操作审计
+
+12.5 敏感词库维护
+问题：敏感词库不完善
+解决：定期更新敏感词库 + 人工审核兜底
+
+12.6 大量图片上传
+问题：图片直接存储数据库影响性能
+解决：使用OSS对象存储（阿里云OSS/七牛云）
+
+================================================================================
+                              文档结束
+================================================================================
