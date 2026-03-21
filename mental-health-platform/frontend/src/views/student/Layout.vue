@@ -22,6 +22,12 @@
         </nav>
 
         <div class="header-right">
+          <el-badge :value="unreadCount" :hidden="unreadCount === 0" class="notification-badge">
+            <el-button circle @click="goToNotifications">
+              <el-icon :size="20"><Bell /></el-icon>
+            </el-button>
+          </el-badge>
+          
           <el-dropdown @command="handleCommand">
             <div class="user-info">
               <el-avatar :size="36" :src="userInfo.avatar">
@@ -77,7 +83,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
@@ -90,14 +96,18 @@ import {
   User,
   Setting,
   SwitchButton,
-  ArrowDown
+  ArrowDown,
+  Bell
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
+import { getUnreadCount } from '@/api/notification'
 
 const router = useRouter()
 const userStore = useUserStore()
 
 const userInfo = computed(() => userStore.userInfo)
+const unreadCount = ref(0)
+let pollingTimer = null
 
 const menuItems = [
   { path: '/student/home', label: '首页', icon: HomeFilled },
@@ -106,6 +116,31 @@ const menuItems = [
   { path: '/student/tests', label: '心理测试', icon: DataAnalysis },
   { path: '/student/moments', label: '心灵树洞', icon: ChatDotRound }
 ]
+
+onMounted(() => {
+  loadUnreadCount()
+  // 每30秒轮询一次未读数量
+  pollingTimer = setInterval(loadUnreadCount, 30000)
+})
+
+onUnmounted(() => {
+  if (pollingTimer) {
+    clearInterval(pollingTimer)
+  }
+})
+
+const loadUnreadCount = async () => {
+  try {
+    const res = await getUnreadCount()
+    unreadCount.value = res.data
+  } catch (error) {
+    console.error('加载未读通知数量失败', error)
+  }
+}
+
+const goToNotifications = () => {
+  router.push('/student/notifications')
+}
 
 const handleCommand = (command) => {
   switch (command) {
@@ -215,6 +250,12 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   gap: 16px;
+
+  .notification-badge {
+    :deep(.el-badge__content) {
+      background-color: #f56c6c;
+    }
+  }
 }
 
 .user-info {

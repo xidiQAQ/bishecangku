@@ -1,7 +1,10 @@
 package com.mental.health.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -17,19 +20,9 @@ public class ArticleCollect implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
-    /**
-     * 用户ID
-     */
     private Long userId;
 
-    /**
-     * 文章ID
-     */
     private Long articleId;
 
-    /**
-     * 收藏时间
-     */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

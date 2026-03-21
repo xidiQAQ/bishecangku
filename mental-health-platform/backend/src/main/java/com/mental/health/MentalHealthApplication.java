@@ -3,6 +3,7 @@ package com.mental.health;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 大学生心理健康关怀与预约平台 - 启动类
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("com.mental.health.mapper")
+@EnableScheduling
 public class MentalHealthApplication {
 
     public static void main(String[] args) {

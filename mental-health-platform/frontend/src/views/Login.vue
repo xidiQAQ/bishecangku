@@ -235,6 +235,7 @@ const handleSubmit = async () => {
       if (res.code === 200) {
         userStore.login({
           token: res.data.token,
+          refreshToken: res.data.refreshToken,
           userId: res.data.id,
           userInfo: res.data
         })

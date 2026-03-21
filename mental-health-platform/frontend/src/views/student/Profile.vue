@@ -90,7 +90,7 @@
             <span>我的预约</span>
             <el-icon class="arrow"><ArrowRight /></el-icon>
           </div>
-          <div class="action-item" @click="router.push('/student/tests')">
+          <div class="action-item" @click="router.push('/student/test-history')">
             <el-icon><DataAnalysis /></el-icon>
             <span>测试历史</span>
             <el-icon class="arrow"><ArrowRight /></el-icon>

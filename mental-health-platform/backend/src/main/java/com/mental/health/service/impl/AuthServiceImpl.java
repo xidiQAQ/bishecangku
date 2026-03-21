@@ -51,8 +51,9 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("账号已被禁用");
         }
 
-        // 生成Token
+        // 生成Access Token和Refresh Token
         String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getUserType());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getUsername(), user.getUserType());
 
         // 构造返回对象
         LoginVO loginVO = new LoginVO();
@@ -61,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
         loginVO.setRealName(user.getRealName());
         loginVO.setUserType(user.getUserType());
         loginVO.setToken(token);
+        loginVO.setRefreshToken(refreshToken);
         loginVO.setExpireTime(expiration);
 
         return loginVO;
@@ -96,5 +98,48 @@ public class AuthServiceImpl implements AuthService {
         user.setGender(0);
 
         sysUserMapper.insert(user);
+    }
+
+    @Override
+    public LoginVO refreshToken(String refreshToken) {
+        // 验证Refresh Token
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new RuntimeException("Refresh Token无效或已过期");
+        }
+
+        // 从Refresh Token中获取用户信息
+        Long userId = jwtUtil.getUserIdFromToken(refreshToken);
+        String username = jwtUtil.getUsernameFromToken(refreshToken);
+        Integer userType = jwtUtil.getUserTypeFromToken(refreshToken);
+
+        if (userId == null || username == null || userType == null) {
+            throw new RuntimeException("Refresh Token信息不完整");
+        }
+
+        // 查询用户，确保用户仍然有效
+        SysUser user = sysUserMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        if (user.getStatus() == 0) {
+            throw new RuntimeException("账号已被禁用");
+        }
+
+        // 生成新的Access Token和Refresh Token
+        String newToken = jwtUtil.generateToken(userId, username, userType);
+        String newRefreshToken = jwtUtil.generateRefreshToken(userId, username, userType);
+
+        // 构造返回对象
+        LoginVO loginVO = new LoginVO();
+        loginVO.setId(userId);
+        loginVO.setUsername(username);
+        loginVO.setRealName(user.getRealName());
+        loginVO.setUserType(userType);
+        loginVO.setToken(newToken);
+        loginVO.setRefreshToken(newRefreshToken);
+        loginVO.setExpireTime(expiration);
+
+        return loginVO;
     }
 }

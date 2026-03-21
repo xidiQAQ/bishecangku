@@ -22,23 +22,39 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.refresh-expiration}")
+    private Long refreshExpiration;
+
     /**
-     * 生成Token
+     * 生成Access Token
      */
     public String generateToken(Long userId, String username, Integer userType) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);
         claims.put("userType", userType);
-        return createToken(claims);
+        claims.put("tokenType", "access");
+        return createToken(claims, expiration);
+    }
+
+    /**
+     * 生成Refresh Token
+     */
+    public String generateRefreshToken(Long userId, String username, Integer userType) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("username", username);
+        claims.put("userType", userType);
+        claims.put("tokenType", "refresh");
+        return createToken(claims, refreshExpiration);
     }
 
     /**
      * 创建Token
      */
-    private String createToken(Map<String, Object> claims) {
+    private String createToken(Map<String, Object> claims, Long expirationTime) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration);
+        Date expiryDate = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -102,5 +118,34 @@ public class JwtUtil {
     private boolean isTokenExpired(Claims claims) {
         Date expiration = claims.getExpiration();
         return expiration.before(new Date());
+    }
+
+    /**
+     * 判断Token是否即将过期（30分钟内）
+     */
+    public boolean isTokenExpiringSoon(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            if (claims == null) {
+                return false;
+            }
+            Date expiration = claims.getExpiration();
+            long timeLeft = expiration.getTime() - System.currentTimeMillis();
+            // 如果剩余时间少于30分钟，返回true
+            return timeLeft < 30 * 60 * 1000;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 从Token中获取用户类型
+     */
+    public Integer getUserTypeFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        if (claims != null) {
+            return Integer.valueOf(claims.get("userType").toString());
+        }
+        return null;
     }
 }

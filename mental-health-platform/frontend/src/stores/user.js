@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref(localStorage.getItem('token') || '')
+  const refreshToken = ref(localStorage.getItem('refreshToken') || '')
   const userId = ref(localStorage.getItem('userId') || '')
   const userInfo = ref(JSON.parse(localStorage.getItem('userInfo') || '{}'))
 
@@ -18,6 +19,12 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('token', newToken)
   }
 
+  // 设置refreshToken
+  const setRefreshToken = (newRefreshToken) => {
+    refreshToken.value = newRefreshToken
+    localStorage.setItem('refreshToken', newRefreshToken)
+  }
+
   // 设置userId
   const setUserId = (id) => {
     userId.value = id
@@ -27,6 +34,7 @@ export const useUserStore = defineStore('user', () => {
   // 登录
   const login = (loginData) => {
     setToken(loginData.token)
+    setRefreshToken(loginData.refreshToken)
     setUserId(loginData.userId)
     setUserInfo(loginData.userInfo)
   }
@@ -34,9 +42,11 @@ export const useUserStore = defineStore('user', () => {
   // 登出
   const logout = () => {
     token.value = ''
+    refreshToken.value = ''
     userId.value = ''
     userInfo.value = {}
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
     localStorage.removeItem('userId')
     localStorage.removeItem('userInfo')
   }
@@ -53,10 +63,12 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     token,
+    refreshToken,
     userId,
     userInfo,
     setUserInfo,
     setToken,
+    setRefreshToken,
     setUserId,
     login,
     logout,

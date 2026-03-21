@@ -16,7 +16,7 @@ public class AesUtil {
     private static final String TRANSFORMATION = "AES/ECB/PKCS5Padding";
     
     // 密钥（32字节=256位）- 生产环境应该从配置文件或密钥管理服务获取
-    private static final String SECRET_KEY = "MentalHealthPlatform2024Key!!";
+    private static final String SECRET_KEY = "12345678901234567890123456789012";
 
     /**
      * 加密

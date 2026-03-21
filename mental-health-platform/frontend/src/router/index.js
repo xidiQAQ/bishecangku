@@ -61,6 +61,12 @@ const routes = [
         meta: { title: '心理测评' }
       },
       {
+        path: 'test-history',
+        name: 'TestHistory',
+        component: () => import('@/views/student/TestHistory.vue'),
+        meta: { title: '测试历史' }
+      },
+      {
         path: 'moments',
         name: 'Moments',
         component: () => import('@/views/student/Moments.vue'),
@@ -71,6 +77,12 @@ const routes = [
         name: 'Profile',
         component: () => import('@/views/student/Profile.vue'),
         meta: { title: '个人中心' }
+      },
+      {
+        path: 'notifications',
+        name: 'Notifications',
+        component: () => import('@/views/student/Notifications.vue'),
+        meta: { title: '通知中心' }
       }
     ]
   },
@@ -109,6 +121,12 @@ const routes = [
         name: 'CounselorProfile',
         component: () => import('@/views/counselor/Profile.vue'),
         meta: { title: '个人中心' }
+      },
+      {
+        path: 'notifications',
+        name: 'CounselorNotifications',
+        component: () => import('@/views/student/Notifications.vue'),
+        meta: { title: '通知中心' }
       }
     ]
   },

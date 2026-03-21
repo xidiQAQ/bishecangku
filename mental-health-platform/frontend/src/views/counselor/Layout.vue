@@ -38,6 +38,11 @@
           <div class="header-content">
             <span class="title">心理健康关怀平台</span>
             <div class="user-info">
+              <el-badge :value="unreadCount" :hidden="unreadCount === 0" class="notification-badge">
+                <el-button circle @click="goToNotifications">
+                  <el-icon :size="20"><Bell /></el-icon>
+                </el-button>
+              </el-badge>
               <span>{{ userStore.userInfo?.realName }}</span>
               <el-button type="danger" size="small" @click="logout">退出</el-button>
             </div>
@@ -53,17 +58,45 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { DataBoard, Calendar, Document, User } from '@element-plus/icons-vue'
+import { DataBoard, Calendar, Document, User, Bell } from '@element-plus/icons-vue'
+import { getUnreadCount } from '@/api/notification'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
 const activeMenu = computed(() => route.path)
+const unreadCount = ref(0)
+let pollingTimer = null
+
+onMounted(() => {
+  loadUnreadCount()
+  // 每30秒轮询一次未读数量
+  pollingTimer = setInterval(loadUnreadCount, 30000)
+})
+
+onUnmounted(() => {
+  if (pollingTimer) {
+    clearInterval(pollingTimer)
+  }
+})
+
+const loadUnreadCount = async () => {
+  try {
+    const res = await getUnreadCount()
+    unreadCount.value = res.data
+  } catch (error) {
+    console.error('加载未读通知数量失败', error)
+  }
+}
+
+const goToNotifications = () => {
+  router.push('/counselor/notifications')
+}
 
 const logout = () => {
   userStore.logout()
@@ -121,6 +154,12 @@ const logout = () => {
         display: flex;
         align-items: center;
         gap: 15px;
+
+        .notification-badge {
+          :deep(.el-badge__content) {
+            background-color: #f56c6c;
+          }
+        }
       }
     }
   }

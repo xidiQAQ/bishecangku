@@ -44,4 +44,15 @@ public class AuthController {
             return Result.error(e.getMessage());
         }
     }
+
+    @ApiOperation("刷新Token")
+    @PostMapping("/refresh")
+    public Result<LoginVO> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {
+        try {
+            LoginVO loginVO = authService.refreshToken(refreshToken);
+            return Result.success("Token刷新成功", loginVO);
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
 }

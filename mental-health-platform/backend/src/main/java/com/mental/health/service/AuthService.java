@@ -18,4 +18,9 @@ public interface AuthService {
      * 用户注册
      */
     void register(RegisterDTO registerDTO);
+
+    /**
+     * 刷新Token
+     */
+    LoginVO refreshToken(String refreshToken);
 }

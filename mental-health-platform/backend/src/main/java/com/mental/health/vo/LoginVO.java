@@ -37,6 +37,11 @@ public class LoginVO implements Serializable {
     private String token;
 
     /**
+     * Refresh Token
+     */
+    private String refreshToken;
+
+    /**
      * Token过期时间（毫秒）
      */
     private Long expireTime;
