@@ -64,4 +64,74 @@ public class AdminController {
         adminService.auditMoment(momentId, adminId, auditStatus, auditReason);
         return Result.success();
     }
+
+    @ApiOperation("获取文章列表（管理员）")
+    @GetMapping("/articles")
+    public Result<Page> getArticles(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size) {
+        Page page = adminService.getArticles(title, categoryId, current, size);
+        return Result.success(page);
+    }
+
+    @ApiOperation("创建文章")
+    @PostMapping("/articles")
+    public Result<Void> createArticle(@RequestBody com.mental.health.entity.Article article) {
+        adminService.createArticle(article);
+        return Result.success();
+    }
+
+    @ApiOperation("更新文章")
+    @PutMapping("/articles/{id}")
+    public Result<Void> updateArticle(
+            @PathVariable Long id,
+            @RequestBody com.mental.health.entity.Article article) {
+        article.setId(id);
+        adminService.updateArticle(article);
+        return Result.success();
+    }
+
+    @ApiOperation("删除文章")
+    @DeleteMapping("/articles/{id}")
+    public Result<Void> deleteArticle(@PathVariable Long id) {
+        adminService.deleteArticle(id);
+        return Result.success();
+    }
+
+    @ApiOperation("获取咨询师列表")
+    @GetMapping("/counselors")
+    public Result<Page> getCounselors(
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size) {
+        Page page = adminService.getCounselors(current, size);
+        return Result.success(page);
+    }
+
+    @ApiOperation("添加咨询师")
+    @PostMapping("/counselors")
+    public Result<Void> addCounselor(@RequestBody com.mental.health.dto.CounselorDTO dto) {
+        adminService.addCounselor(dto);
+        return Result.success();
+    }
+
+    @ApiOperation("更新咨询师")
+    @PutMapping("/counselors/{id}")
+    public Result<Void> updateCounselor(
+            @PathVariable Long id,
+            @RequestBody com.mental.health.dto.CounselorDTO dto) {
+        adminService.updateCounselor(id, dto);
+        return Result.success();
+    }
+
+    @ApiOperation("获取所有预约列表（管理员）")
+    @GetMapping("/appointments")
+    public Result<Page> getAllAppointments(
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) Integer status) {
+        Page page = adminService.getAllAppointments(current, size, status);
+        return Result.success(page);
+    }
 }

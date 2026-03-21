@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getCategories() {
   return request({
-    url: '/api/articles/categories',
+    url: '/articles/categories',
     method: 'get'
   })
 }
@@ -15,7 +15,7 @@ export function getCategories() {
  */
 export function getArticleList(params) {
   return request({
-    url: '/api/articles/page',
+    url: '/articles/page',
     method: 'get',
     params
   })
@@ -26,7 +26,7 @@ export function getArticleList(params) {
  */
 export function getArticleDetail(id) {
   return request({
-    url: `/api/articles/${id}`,
+    url: `/articles/${id}`,
     method: 'get'
   })
 }
@@ -36,7 +36,7 @@ export function getArticleDetail(id) {
  */
 export function collectArticle(id) {
   return request({
-    url: `/api/articles/${id}/collect`,
+    url: `/articles/${id}/collect`,
     method: 'post'
   })
 }
@@ -46,7 +46,50 @@ export function collectArticle(id) {
  */
 export function uncollectArticle(id) {
   return request({
-    url: `/api/articles/${id}/collect`,
+    url: `/articles/${id}/collect`,
     method: 'delete'
   })
+}
+
+/**
+ * 创建文章（管理员）
+ */
+export function createArticle(data) {
+  return request({
+    url: '/admin/articles',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 更新文章（管理员）
+ */
+export function updateArticle(id, data) {
+  return request({
+    url: `/admin/articles/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 删除文章（管理员）
+ */
+export function deleteArticle(id) {
+  return request({
+    url: `/admin/articles/${id}`,
+    method: 'delete'
+  })
+}
+
+export default {
+  getCategories,
+  getArticleList,
+  getArticleDetail,
+  collectArticle,
+  uncollectArticle,
+  createArticle,
+  updateArticle,
+  deleteArticle
 }

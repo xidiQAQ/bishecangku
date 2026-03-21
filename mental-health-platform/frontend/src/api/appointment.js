@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getCounselors(params) {
   return request({
-    url: '/api/appointments/counselors',
+    url: '/appointments/counselors',
     method: 'get',
     params
   })
@@ -16,7 +16,7 @@ export function getCounselors(params) {
  */
 export function getCounselorDetail(id) {
   return request({
-    url: `/api/appointments/counselors/${id}`,
+    url: `/appointments/counselors/${id}`,
     method: 'get'
   })
 }
@@ -26,7 +26,7 @@ export function getCounselorDetail(id) {
  */
 export function getCounselorSchedule(id, params) {
   return request({
-    url: `/api/appointments/counselors/${id}/schedule`,
+    url: `/appointments/counselors/${id}/schedule`,
     method: 'get',
     params
   })
@@ -37,7 +37,7 @@ export function getCounselorSchedule(id, params) {
  */
 export function createAppointment(data) {
   return request({
-    url: '/api/appointments',
+    url: '/appointments',
     method: 'post',
     data
   })
@@ -48,7 +48,7 @@ export function createAppointment(data) {
  */
 export function getMyAppointments(params) {
   return request({
-    url: '/api/appointments/my',
+    url: '/appointments/my',
     method: 'get',
     params
   })
@@ -59,7 +59,7 @@ export function getMyAppointments(params) {
  */
 export function cancelAppointment(id) {
   return request({
-    url: `/api/appointments/${id}/cancel`,
+    url: `/appointments/${id}/cancel`,
     method: 'put'
   })
 }
@@ -69,7 +69,7 @@ export function cancelAppointment(id) {
  */
 export function rateAppointment(id, data) {
   return request({
-    url: `/api/appointments/${id}/rate`,
+    url: `/appointments/${id}/rate`,
     method: 'put',
     data
   })

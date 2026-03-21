@@ -28,4 +28,8 @@ public class AppointmentDTO implements Serializable {
 
     private String problemDesc;
     private String studentRemark;
+    
+    // 评价相关字段
+    private Integer rating;
+    private String comment;
 }

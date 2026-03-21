@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/user'
 const routes = [
   {
     path: '/',
-    redirect: '/student/home'
+    redirect: '/login'
   },
   {
     path: '/login',
@@ -73,6 +73,88 @@ const routes = [
         meta: { title: '个人中心' }
       }
     ]
+  },
+  {
+    path: '/counselor',
+    name: 'Counselor',
+    component: () => import('@/views/counselor/Layout.vue'),
+    meta: { requiresAuth: true, role: 2 },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'CounselorDashboard',
+        component: () => import('@/views/counselor/Dashboard.vue'),
+        meta: { title: '工作台' }
+      },
+      {
+        path: 'schedule',
+        name: 'CounselorSchedule',
+        component: () => import('@/views/counselor/Schedule.vue'),
+        meta: { title: '时间管理' }
+      },
+      {
+        path: 'appointments',
+        name: 'CounselorAppointments',
+        component: () => import('@/views/counselor/Appointments.vue'),
+        meta: { title: '预约管理' }
+      },
+      {
+        path: 'notes',
+        name: 'CounselorNotes',
+        component: () => import('@/views/counselor/Notes.vue'),
+        meta: { title: '咨询笔记' }
+      },
+      {
+        path: 'profile',
+        name: 'CounselorProfile',
+        component: () => import('@/views/counselor/Profile.vue'),
+        meta: { title: '个人中心' }
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/admin/Layout.vue'),
+    meta: { requiresAuth: true, role: 3 },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'AdminDashboard',
+        component: () => import('@/views/admin/Dashboard.vue'),
+        meta: { title: '数据看板' }
+      },
+      {
+        path: 'counselors',
+        name: 'AdminCounselors',
+        component: () => import('@/views/admin/Counselors.vue'),
+        meta: { title: '咨询师管理' }
+      },
+      {
+        path: 'articles',
+        name: 'AdminArticles',
+        component: () => import('@/views/admin/Articles.vue'),
+        meta: { title: '文章管理' }
+      },
+      {
+        path: 'moments',
+        name: 'AdminMoments',
+        component: () => import('@/views/admin/Moments.vue'),
+        meta: { title: '树洞审核' }
+      },
+      {
+        path: 'users',
+        name: 'AdminUsers',
+        component: () => import('@/views/admin/Users.vue'),
+        meta: { title: '用户管理' }
+      },
+      {
+        path: 'statistics',
+        name: 'AdminStatistics',
+        component: () => import('@/views/admin/Statistics.vue'),
+        meta: { title: '数据统计' }
+      }
+    ]
   }
 ]
 
@@ -94,7 +176,20 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !userStore.token) {
     next('/login')
   } else if (to.path === '/login' && userStore.token) {
-    next('/student/home')
+    // 根据用户类型跳转到对应页面
+    const userType = userStore.userInfo?.userType
+    if (userType === 1) {
+      next('/student/home')
+    } else if (userType === 2) {
+      next('/counselor/dashboard')
+    } else if (userType === 3) {
+      next('/admin/dashboard')
+    } else {
+      next('/student/home')
+    }
+  } else if (to.meta.role && userStore.userInfo?.userType !== to.meta.role) {
+    // 角色验证
+    next('/login')
   } else {
     next()
   }

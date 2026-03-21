@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getTestList() {
   return request({
-    url: '/api/tests',
+    url: '/tests',
     method: 'get'
   })
 }
@@ -15,7 +15,7 @@ export function getTestList() {
  */
 export function getTestQuestions(testId) {
   return request({
-    url: `/api/tests/${testId}/questions`,
+    url: `/tests/${testId}/questions`,
     method: 'get'
   })
 }
@@ -25,7 +25,7 @@ export function getTestQuestions(testId) {
  */
 export function submitTest(data) {
   return request({
-    url: '/api/tests/submit',
+    url: '/tests/submit',
     method: 'post',
     data
   })
@@ -36,7 +36,7 @@ export function submitTest(data) {
  */
 export function getTestHistory() {
   return request({
-    url: '/api/tests/history',
+    url: '/tests/history',
     method: 'get'
   })
 }
@@ -46,7 +46,7 @@ export function getTestHistory() {
  */
 export function getTestResult(resultId) {
   return request({
-    url: `/api/tests/results/${resultId}`,
+    url: `/tests/results/${resultId}`,
     method: 'get'
   })
 }

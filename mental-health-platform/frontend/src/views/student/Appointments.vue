@@ -38,7 +38,7 @@
             </div>
           </div>
           <el-tag :type="getStatusType(appointment.status)" size="large">
-            {{ appointment.status }}
+            {{ appointment.statusText || appointment.status }}
           </el-tag>
         </div>
 
@@ -63,7 +63,7 @@
 
         <div class="card-actions">
           <el-button
-            v-if="appointment.status === '待确认'"
+            v-if="appointment.status === 0 || appointment.statusText === '待确认'"
             type="danger"
             plain
             @click="cancelAppointment(appointment.id)"
@@ -71,7 +71,7 @@
             取消预约
           </el-button>
           <el-button
-            v-if="appointment.status === '已完成' && !appointment.rating"
+            v-if="(appointment.status === 2 || appointment.statusText === '已完成') && !appointment.rating"
             type="primary"
             @click="showRatingDialog(appointment)"
           >
@@ -227,6 +227,11 @@ const submitRating = async () => {
 }
 
 const getStatusType = (status) => {
+  // status可能是数字或文本
+  if (typeof status === 'number') {
+    const typeMap = { 0: 'warning', 1: 'success', 2: 'info', 3: 'danger', 4: 'danger' }
+    return typeMap[status] || 'info'
+  }
   const typeMap = {
     '待确认': 'warning',
     '已确认': 'success',

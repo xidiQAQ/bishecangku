@@ -55,6 +55,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 vo.setRealName(user.getRealName());
                 vo.setAvatar(user.getAvatar());
             }
+            
+            // 检查是否有可预约时间（未来7天内）
+            LocalDate today = LocalDate.now();
+            LocalDate endDate = today.plusDays(7);
+            LambdaQueryWrapper<CounselorSchedule> scheduleWrapper = new LambdaQueryWrapper<>();
+            scheduleWrapper.eq(CounselorSchedule::getCounselorId, info.getId()); // 使用counselor_info.id
+            scheduleWrapper.between(CounselorSchedule::getScheduleDate, today, endDate);
+            scheduleWrapper.eq(CounselorSchedule::getStatus, 1); // 可预约状态
+            Long availableCount = scheduleMapper.selectCount(scheduleWrapper);
+            vo.setIsAvailable(availableCount > 0);
+            
             return vo;
         }).collect(Collectors.toList());
 
@@ -187,9 +198,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void confirmAppointment(Long appointmentId, Long counselorId) {
+    public void confirmAppointment(Long appointmentId, Long userId) {
+        // 先查询咨询师信息获取counselor_info.id
+        CounselorInfo info = counselorInfoMapper.selectOne(
+                new LambdaQueryWrapper<CounselorInfo>()
+                        .eq(CounselorInfo::getUserId, userId)
+        );
+        
+        if (info == null) {
+            throw new RuntimeException("咨询师信息不存在");
+        }
+        
         Appointment appointment = appointmentMapper.selectById(appointmentId);
-        if (appointment == null || !appointment.getCounselorId().equals(counselorId)) {
+        if (appointment == null || !appointment.getCounselorId().equals(info.getId())) {
             throw new RuntimeException("预约不存在或无权操作");
         }
         appointment.setStatus(1);
@@ -198,9 +219,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void rejectAppointment(Long appointmentId, Long counselorId, String reason) {
+    public void rejectAppointment(Long appointmentId, Long userId, String reason) {
+        // 先查询咨询师信息获取counselor_info.id
+        CounselorInfo info = counselorInfoMapper.selectOne(
+                new LambdaQueryWrapper<CounselorInfo>()
+                        .eq(CounselorInfo::getUserId, userId)
+        );
+        
+        if (info == null) {
+            throw new RuntimeException("咨询师信息不存在");
+        }
+        
         Appointment appointment = appointmentMapper.selectById(appointmentId);
-        if (appointment == null || !appointment.getCounselorId().equals(counselorId)) {
+        if (appointment == null || !appointment.getCounselorId().equals(info.getId())) {
             throw new RuntimeException("预约不存在或无权操作");
         }
         appointment.setStatus(4);
@@ -219,9 +250,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void completeAppointment(Long appointmentId, Long counselorId) {
+    public void completeAppointment(Long appointmentId, Long userId) {
+        // 先查询咨询师信息获取counselor_info.id
+        CounselorInfo info = counselorInfoMapper.selectOne(
+                new LambdaQueryWrapper<CounselorInfo>()
+                        .eq(CounselorInfo::getUserId, userId)
+        );
+        
+        if (info == null) {
+            throw new RuntimeException("咨询师信息不存在");
+        }
+        
         Appointment appointment = appointmentMapper.selectById(appointmentId);
-        if (appointment == null || !appointment.getCounselorId().equals(counselorId)) {
+        if (appointment == null || !appointment.getCounselorId().equals(info.getId())) {
             throw new RuntimeException("预约不存在或无权操作");
         }
         appointment.setStatus(2);
@@ -256,9 +297,29 @@ public class AppointmentServiceImpl implements AppointmentService {
             vo.setStudentName(student.getRealName());
         }
 
-        SysUser counselor = userMapper.selectById(appointment.getCounselorId());
-        if (counselor != null) {
-            vo.setCounselorName(counselor.getRealName());
+        // 通过counselor_info.id查询咨询师信息
+        CounselorInfo counselorInfo = counselorInfoMapper.selectById(appointment.getCounselorId());
+        if (counselorInfo != null) {
+            SysUser counselor = userMapper.selectById(counselorInfo.getUserId());
+            if (counselor != null) {
+                vo.setCounselorName(counselor.getRealName());
+                vo.setCounselorAvatar(counselor.getAvatar());
+            }
+            vo.setCounselorTitle(counselorInfo.getTitle());
+        }
+
+        // 解析时间段 (格式: "09:00-10:00")
+        if (appointment.getTimeSlot() != null && appointment.getTimeSlot().contains("-")) {
+            String[] times = appointment.getTimeSlot().split("-");
+            vo.setStartTime(times[0]);
+            vo.setEndTime(times[1]);
+        }
+        
+        // 设置主题为问题描述的简短版本
+        if (appointment.getProblemDesc() != null) {
+            vo.setTopic(appointment.getProblemDesc().length() > 20 
+                ? appointment.getProblemDesc().substring(0, 20) + "..." 
+                : appointment.getProblemDesc());
         }
 
         vo.setStatusText(getStatusText(appointment.getStatus()));
@@ -279,10 +340,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         return "APT" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
 
-    private void updateCounselorRating(Long counselorId) {
+    private void updateCounselorRating(Long counselorInfoId) {
         // 查询所有已评价的预约
         LambdaQueryWrapper<Appointment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Appointment::getCounselorId, counselorId);
+        wrapper.eq(Appointment::getCounselorId, counselorInfoId);
         wrapper.eq(Appointment::getStatus, 2);
         wrapper.isNotNull(Appointment::getRating);
         List<Appointment> appointments = appointmentMapper.selectList(wrapper);
@@ -293,10 +354,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     .average()
                     .orElse(0.0);
 
-            CounselorInfo info = counselorInfoMapper.selectOne(
-                    new LambdaQueryWrapper<CounselorInfo>()
-                            .eq(CounselorInfo::getUserId, counselorId)
-            );
+            CounselorInfo info = counselorInfoMapper.selectById(counselorInfoId);
             if (info != null) {
                 info.setRating(java.math.BigDecimal.valueOf(avgRating));
                 info.setRatingCount(appointments.size());

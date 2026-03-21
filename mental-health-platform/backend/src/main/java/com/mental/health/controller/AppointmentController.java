@@ -57,9 +57,20 @@ public class AppointmentController {
     @GetMapping("/counselors/{id}/schedule")
     public Result<List<CounselorSchedule>> getCounselorSchedule(
             @PathVariable Long id,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         try {
+            // 如果只传了date参数,则查询当天的时间表
+            if (date != null && startDate == null && endDate == null) {
+                startDate = date;
+                endDate = date;
+            }
+            // 如果都没传,默认查询未来7天
+            if (startDate == null || endDate == null) {
+                startDate = LocalDate.now();
+                endDate = LocalDate.now().plusDays(7);
+            }
             List<CounselorSchedule> schedules = appointmentService.getCounselorSchedule(id, startDate, endDate);
             return Result.success(schedules);
         } catch (Exception e) {
@@ -71,7 +82,7 @@ public class AppointmentController {
     @PostMapping
     public Result<String> createAppointment(
             @Valid @RequestBody AppointmentDTO dto,
-            @RequestParam Long studentId) {
+            @RequestHeader("userId") Long studentId) {
         try {
             appointmentService.createAppointment(dto, studentId);
             return Result.success("预约成功");
@@ -84,7 +95,7 @@ public class AppointmentController {
     @PutMapping("/{id}/cancel")
     public Result<String> cancelAppointment(
             @PathVariable Long id,
-            @RequestParam Long userId,
+            @RequestHeader("userId") Long userId,
             @RequestParam(required = false) String reason) {
         try {
             appointmentService.cancelAppointment(id, userId, reason);
@@ -99,7 +110,7 @@ public class AppointmentController {
     public Result<Page<AppointmentVO>> getMyAppointments(
             @RequestParam(defaultValue = "1") Integer current,
             @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam Long userId,
+            @RequestHeader("userId") Long userId,
             @RequestParam(required = false) Integer status) {
         try {
             Page<AppointmentVO> page = appointmentService.getMyAppointments(current, size, userId, status);
@@ -124,7 +135,7 @@ public class AppointmentController {
     @PutMapping("/{id}/confirm")
     public Result<String> confirmAppointment(
             @PathVariable Long id,
-            @RequestParam Long counselorId) {
+            @RequestHeader("userId") Long counselorId) {
         try {
             appointmentService.confirmAppointment(id, counselorId);
             return Result.success("确认成功");
@@ -137,7 +148,7 @@ public class AppointmentController {
     @PutMapping("/{id}/reject")
     public Result<String> rejectAppointment(
             @PathVariable Long id,
-            @RequestParam Long counselorId,
+            @RequestHeader("userId") Long counselorId,
             @RequestParam String reason) {
         try {
             appointmentService.rejectAppointment(id, counselorId, reason);
@@ -151,7 +162,7 @@ public class AppointmentController {
     @PutMapping("/{id}/complete")
     public Result<String> completeAppointment(
             @PathVariable Long id,
-            @RequestParam Long counselorId) {
+            @RequestHeader("userId") Long counselorId) {
         try {
             appointmentService.completeAppointment(id, counselorId);
             return Result.success("已完成");
@@ -164,11 +175,10 @@ public class AppointmentController {
     @PutMapping("/{id}/rate")
     public Result<String> rateAppointment(
             @PathVariable Long id,
-            @RequestParam Long studentId,
-            @RequestParam Integer rating,
-            @RequestParam(required = false) String comment) {
+            @RequestHeader("userId") Long studentId,
+            @RequestBody AppointmentDTO dto) {
         try {
-            appointmentService.rateAppointment(id, studentId, rating, comment);
+            appointmentService.rateAppointment(id, studentId, dto.getRating(), dto.getComment());
             return Result.success("评价成功");
         } catch (Exception e) {
             return Result.error(e.getMessage());

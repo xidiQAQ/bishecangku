@@ -19,8 +19,13 @@ public class AppointmentVO implements Serializable {
     private String studentName;
     private Long counselorId;
     private String counselorName;
+    private String counselorTitle;
+    private String counselorAvatar;
     private LocalDate appointmentDate;
     private String timeSlot;
+    private String startTime;
+    private String endTime;
+    private String topic;
     private String consultType;
     private String problemDesc;
     private Integer status;

@@ -10,7 +10,7 @@
         <p class="counselor-title">{{ counselor.title }}</p>
         <div class="counselor-rating">
           <el-rate v-model="counselor.rating" disabled show-score />
-          <span class="rating-count">({{ counselor.consultCount }}次咨询)</span>
+          <span class="rating-count">({{ counselor.ratingCount || 0 }}次评价)</span>
         </div>
         <div class="counselor-tags">
           <el-tag
@@ -36,9 +36,17 @@
         <div class="content-section">
           <h2 class="section-title">
             <el-icon><Medal /></el-icon>
-            专业资质
+            教育背景
           </h2>
-          <p class="section-text">{{ counselor.qualification }}</p>
+          <p class="section-text">{{ counselor.education || '暂无信息' }}</p>
+        </div>
+
+        <div class="content-section">
+          <h2 class="section-title">
+            <el-icon><Star /></el-icon>
+            工作经验
+          </h2>
+          <p class="section-text">{{ counselor.experience || '暂无信息' }}</p>
         </div>
 
         <div class="content-section">
@@ -63,19 +71,26 @@
       </h2>
 
       <div class="schedule-container">
-        <el-calendar v-model="selectedDate">
-          <template #date-cell="{ data }">
+        <!-- 日期选择 -->
+        <div class="date-selector">
+          <h3>选择日期</h3>
+          <div class="date-grid">
             <div
-              class="calendar-day"
-              :class="{ available: isDateAvailable(data.day) }"
-              @click="selectDate(data.day)"
+              v-for="date in availableDates"
+              :key="date.value"
+              class="date-card"
+              :class="{ selected: selectedDate === date.value }"
+              @click="selectDate(date.value)"
             >
-              {{ data.day.split('-').slice(2).join('-') }}
+              <div class="date-weekday">{{ date.weekday }}</div>
+              <div class="date-day">{{ date.day }}</div>
+              <div class="date-month">{{ date.month }}</div>
             </div>
-          </template>
-        </el-calendar>
+          </div>
+        </div>
 
-        <div class="time-slots" v-if="timeSlots.length > 0">
+        <!-- 时间段选择 -->
+        <div class="time-slots" v-if="selectedDate && timeSlots.length > 0">
           <h3>可预约时段</h3>
           <div class="slots-grid">
             <div
@@ -85,12 +100,12 @@
               :class="{ selected: selectedSlot?.id === slot.id, disabled: !slot.isAvailable }"
               @click="selectSlot(slot)"
             >
-              {{ slot.startTime }} - {{ slot.endTime }}
+              {{ slot.timeSlot }}
             </div>
           </div>
         </div>
 
-        <el-empty v-else description="该日期暂无可预约时段" />
+        <el-empty v-else-if="selectedDate && timeSlots.length === 0" description="该日期暂无可预约时段" />
       </div>
 
       <div class="appointment-form" v-if="selectedSlot">
@@ -138,7 +153,8 @@ const route = useRoute()
 
 const counselor = ref(null)
 const loading = ref(false)
-const selectedDate = ref(new Date())
+const selectedDate = ref(null)
+const availableDates = ref([])
 const timeSlots = ref([])
 const selectedSlot = ref(null)
 const submitting = ref(false)
@@ -148,11 +164,39 @@ const appointmentForm = ref({
   topic: ''
 })
 
+// 生成未来7天的日期列表
+const generateAvailableDates = () => {
+  const dates = []
+  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  
+  for (let i = 0; i < 7; i++) {
+    const date = dayjs().add(i, 'day')
+    dates.push({
+      value: date.format('YYYY-MM-DD'),
+      day: date.format('DD'),
+      month: date.format('MM月'),
+      weekday: weekdays[date.day()],
+      isToday: i === 0
+    })
+  }
+  
+  availableDates.value = dates
+  // 默认选择今天
+  if (dates.length > 0) {
+    selectedDate.value = dates[0].value
+  }
+}
+
 const fetchCounselor = async () => {
   try {
     loading.value = true
     const res = await request.get(`/appointments/counselors/${route.params.id}`)
-    counselor.value = res.data
+    // 处理specialty字段，将字符串转为数组
+    counselor.value = {
+      ...res.data,
+      specialty: res.data.specialty ? res.data.specialty.split(',') : [],
+      rating: res.data.rating ? Number(res.data.rating) : 0
+    }
   } catch (error) {
     console.error('获取咨询师失败:', error)
     ElMessage.error('咨询师不存在')
@@ -165,27 +209,24 @@ const fetchCounselor = async () => {
 const fetchSchedule = async (date) => {
   try {
     const res = await request.get(`/appointments/counselors/${route.params.id}/schedule`, {
-      params: { date: dayjs(date).format('YYYY-MM-DD') }
+      params: { date: date }
     })
-    timeSlots.value = res.data || []
+    // 转换后端返回的数据格式
+    timeSlots.value = (res.data || []).map(schedule => ({
+      id: schedule.id,
+      timeSlot: schedule.timeSlot,
+      isAvailable: schedule.status === 1 // 1表示可预约
+    }))
   } catch (error) {
     console.error('获取时间表失败:', error)
     timeSlots.value = []
   }
 }
 
-const isDateAvailable = (date) => {
-  const today = dayjs().startOf('day')
-  const checkDate = dayjs(date)
-  return checkDate.isAfter(today) || checkDate.isSame(today)
-}
-
 const selectDate = (date) => {
-  if (isDateAvailable(date)) {
-    selectedDate.value = new Date(date)
-    selectedSlot.value = null
-    fetchSchedule(date)
-  }
+  selectedDate.value = date
+  selectedSlot.value = null
+  fetchSchedule(date)
 }
 
 const selectSlot = (slot) => {
@@ -204,9 +245,10 @@ const submitAppointment = async () => {
     submitting.value = true
     await request.post('/appointments', {
       counselorId: counselor.value.id,
-      scheduleId: selectedSlot.value.id,
+      appointmentDate: selectedDate.value,
+      timeSlot: selectedSlot.value.timeSlot,
       consultType: appointmentForm.value.consultType,
-      topic: appointmentForm.value.topic
+      problemDesc: appointmentForm.value.topic
     })
     ElMessage.success('预约成功！咨询师将尽快确认')
     router.push('/student/appointments')
@@ -219,8 +261,12 @@ const submitAppointment = async () => {
 }
 
 onMounted(() => {
+  generateAvailableDates()
   fetchCounselor()
-  fetchSchedule(selectedDate.value)
+  // 获取今天的时间表
+  if (availableDates.value.length > 0) {
+    fetchSchedule(availableDates.value[0].value)
+  }
 })
 </script>
 
@@ -348,6 +394,68 @@ onMounted(() => {
   margin: $spacing-lg 0;
 }
 
+.date-selector {
+  margin-bottom: $spacing-xl;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 16px;
+  }
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-md;
+}
+
+.date-card {
+  background: white;
+  border: 2px solid $border-color;
+  border-radius: $radius-md;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: $transition-fast;
+
+  &:hover {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.05);
+  }
+
+  &.selected {
+    border-color: $primary-color;
+    background: $primary-color;
+    color: white;
+
+    .date-weekday,
+    .date-day,
+    .date-month {
+      color: white;
+    }
+  }
+}
+
+.date-weekday {
+  font-size: 12px;
+  color: $text-tertiary;
+  margin-bottom: 4px;
+}
+
+.date-day {
+  font-size: 24px;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 4px;
+}
+
+.date-month {
+  font-size: 12px;
+  color: $text-secondary;
+}
+
 .calendar-day {
   padding: 8px;
   text-align: center;
@@ -374,7 +482,7 @@ onMounted(() => {
 
 .slots-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: $spacing-md;
 }
 
@@ -418,6 +526,10 @@ onMounted(() => {
 @media (max-width: 768px) {
   .counselor-profile {
     grid-template-columns: 1fr;
+  }
+
+  .date-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .slots-grid {

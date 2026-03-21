@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,6 +32,7 @@ public class AdminServiceImpl implements AdminService {
     private final AppointmentMapper appointmentMapper;
     private final TestResultMapper testResultMapper;
     private final MomentMapper momentMapper;
+    private final CounselorInfoMapper counselorInfoMapper;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -168,5 +171,161 @@ public class AdminServiceImpl implements AdminService {
         moment.setAuditTime(LocalDateTime.now());
         
         momentMapper.updateById(moment);
+    }
+
+    @Override
+    public Page getArticles(String title, Long categoryId, Integer current, Integer size) {
+        Page<Article> page = new Page<>(current, size);
+        
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        if (title != null && !title.isEmpty()) {
+            wrapper.like(Article::getTitle, title);
+        }
+        if (categoryId != null) {
+            wrapper.eq(Article::getCategoryId, categoryId);
+        }
+        wrapper.orderByDesc(Article::getCreatedAt);
+        
+        return articleMapper.selectPage(page, wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void createArticle(Article article) {
+        articleMapper.insert(article);
+    }
+
+    @Override
+    @Transactional
+    public void updateArticle(Article article) {
+        articleMapper.updateById(article);
+    }
+
+    @Override
+    @Transactional
+    public void deleteArticle(Long id) {
+        articleMapper.deleteById(id);
+    }
+
+    @Override
+    public Page getCounselors(Integer current, Integer size) {
+        Page<SysUser> page = new Page<>(current, size);
+        
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUser::getUserType, 2)
+                .orderByDesc(SysUser::getCreatedAt);
+        
+        return userMapper.selectPage(page, wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void addCounselor(com.mental.health.dto.CounselorDTO dto) {
+        // 创建用户账号
+        SysUser user = new SysUser();
+        user.setUsername(dto.getUsername());
+        user.setPassword(dto.getPassword()); // 实际应该加密
+        user.setRealName(dto.getRealName());
+        user.setPhone(dto.getPhone());
+        user.setUserType(2); // 咨询师
+        user.setStatus(1);
+        userMapper.insert(user);
+        
+        // 创建咨询师信息
+        CounselorInfo info = new CounselorInfo();
+        info.setUserId(user.getId());
+        info.setTitle(dto.getTitle());
+        info.setSpecialty(dto.getSpecialty());
+        info.setIntroduction(dto.getIntroduction());
+        info.setEducation(dto.getEducation());
+        info.setCertificate(dto.getCertificate());
+        info.setRating(java.math.BigDecimal.ZERO);
+        info.setRatingCount(0);
+        counselorInfoMapper.insert(info);
+    }
+
+    @Override
+    @Transactional
+    public void updateCounselor(Long id, com.mental.health.dto.CounselorDTO dto) {
+        SysUser user = userMapper.selectById(id);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        
+        user.setRealName(dto.getRealName());
+        user.setPhone(dto.getPhone());
+        userMapper.updateById(user);
+        
+        LambdaQueryWrapper<CounselorInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CounselorInfo::getUserId, id);
+        CounselorInfo info = counselorInfoMapper.selectOne(wrapper);
+        
+        if (info != null) {
+            info.setTitle(dto.getTitle());
+            info.setSpecialty(dto.getSpecialty());
+            info.setIntroduction(dto.getIntroduction());
+            info.setEducation(dto.getEducation());
+            info.setCertificate(dto.getCertificate());
+            counselorInfoMapper.updateById(info);
+        }
+    }
+
+    @Override
+    public Page getAllAppointments(Integer current, Integer size, Integer status) {
+        Page<Appointment> page = new Page<>(current, size);
+        
+        LambdaQueryWrapper<Appointment> wrapper = new LambdaQueryWrapper<>();
+        if (status != null) {
+            wrapper.eq(Appointment::getStatus, status);
+        }
+        wrapper.orderByDesc(Appointment::getCreatedAt);
+        
+        Page<Appointment> appointmentPage = appointmentMapper.selectPage(page, wrapper);
+        
+        Page<com.mental.health.vo.AppointmentVO> voPage = new Page<>(current, size);
+        voPage.setTotal(appointmentPage.getTotal());
+        
+        List<com.mental.health.vo.AppointmentVO> voList = appointmentPage.getRecords().stream().map(appointment -> {
+            com.mental.health.vo.AppointmentVO vo = new com.mental.health.vo.AppointmentVO();
+            org.springframework.beans.BeanUtils.copyProperties(appointment, vo);
+            
+            // 查询学生信息
+            SysUser student = userMapper.selectById(appointment.getStudentId());
+            if (student != null) {
+                vo.setStudentName(student.getRealName());
+            }
+            
+            // 通过counselor_info.id查询咨询师信息
+            CounselorInfo counselorInfo = counselorInfoMapper.selectById(appointment.getCounselorId());
+            if (counselorInfo != null) {
+                SysUser counselor = userMapper.selectById(counselorInfo.getUserId());
+                if (counselor != null) {
+                    vo.setCounselorName(counselor.getRealName());
+                    vo.setCounselorAvatar(counselor.getAvatar());
+                }
+                vo.setCounselorTitle(counselorInfo.getTitle());
+            }
+            
+            // 解析时间段
+            if (appointment.getTimeSlot() != null && appointment.getTimeSlot().contains("-")) {
+                String[] times = appointment.getTimeSlot().split("-");
+                vo.setStartTime(times[0]);
+                vo.setEndTime(times[1]);
+            }
+            
+            // 设置状态文本
+            Map<Integer, String> statusMap = new HashMap<>();
+            statusMap.put(0, "待确认");
+            statusMap.put(1, "已确认");
+            statusMap.put(2, "已完成");
+            statusMap.put(3, "已取消");
+            statusMap.put(4, "已拒绝");
+            vo.setStatusText(statusMap.getOrDefault(appointment.getStatus(), "未知"));
+            
+            return vo;
+        }).collect(Collectors.toList());
+        
+        voPage.setRecords(voList);
+        return voPage;
     }
 }

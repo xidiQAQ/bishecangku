@@ -125,6 +125,41 @@
               </a>
             </span>
           </div>
+
+          <!-- 快捷登录 -->
+          <div v-if="isLogin" class="quick-login">
+            <div class="quick-login-title">快捷登录</div>
+            <div class="quick-login-grid">
+              <div class="quick-login-card" @click="quickLogin('admin', 'admin123')">
+                <div class="quick-icon admin-icon">
+                  <el-icon><Setting /></el-icon>
+                </div>
+                <div class="quick-name">管理员</div>
+                <div class="quick-username">admin</div>
+              </div>
+              <div class="quick-login-card" @click="quickLogin('counselor1', 'admin123')">
+                <div class="quick-icon counselor-icon">
+                  <el-icon><User /></el-icon>
+                </div>
+                <div class="quick-name">张心理</div>
+                <div class="quick-username">counselor1</div>
+              </div>
+              <div class="quick-login-card" @click="quickLogin('counselor2', 'admin123')">
+                <div class="quick-icon counselor-icon">
+                  <el-icon><User /></el-icon>
+                </div>
+                <div class="quick-name">李咨询</div>
+                <div class="quick-username">counselor2</div>
+              </div>
+              <div class="quick-login-card" @click="quickLogin('student1', 'admin123')">
+                <div class="quick-icon student-icon">
+                  <el-icon><User /></el-icon>
+                </div>
+                <div class="quick-name">测试学生</div>
+                <div class="quick-username">student1</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -135,7 +170,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Phone, Message, ChatDotRound, Calendar, Document } from '@element-plus/icons-vue'
+import { User, Lock, Phone, Message, ChatDotRound, Calendar, Document, Setting } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import request from '@/utils/request'
 
@@ -200,7 +235,7 @@ const handleSubmit = async () => {
       if (res.code === 200) {
         userStore.login({
           token: res.data.token,
-          userId: res.data.userId,
+          userId: res.data.id,
           userInfo: res.data
         })
 
@@ -209,11 +244,11 @@ const handleSubmit = async () => {
         // 根据用户类型跳转
         const userType = res.data.userType
         if (userType === 1) {
-          router.push('/student')
+          router.push('/student/home')
         } else if (userType === 2) {
-          router.push('/counselor')
+          router.push('/counselor/dashboard')
         } else if (userType === 3) {
-          router.push('/admin')
+          router.push('/admin/dashboard')
         }
       }
     } else {
@@ -235,6 +270,44 @@ const handleSubmit = async () => {
     }
   } catch (error) {
     console.error('提交失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 快捷登录
+const quickLogin = async (username, password) => {
+  form.username = username
+  form.password = password
+  
+  loading.value = true
+  try {
+    const res = await request.post('/auth/login', {
+      username,
+      password
+    })
+
+    if (res.code === 200) {
+      userStore.login({
+        token: res.data.token,
+        userId: res.data.id,
+        userInfo: res.data
+      })
+
+      ElMessage.success('登录成功')
+
+      // 根据用户类型跳转
+      const userType = res.data.userType
+      if (userType === 1) {
+        router.push('/student/home')
+      } else if (userType === 2) {
+        router.push('/counselor/dashboard')
+      } else if (userType === 3) {
+        router.push('/admin/dashboard')
+      }
+    }
+  } catch (error) {
+    console.error('快捷登录失败:', error)
   } finally {
     loading.value = false
   }
@@ -473,5 +546,81 @@ const handleSubmit = async () => {
   .form-title {
     font-size: 28px;
   }
+}
+
+.quick-login {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.quick-login-title {
+  font-size: 14px;
+  color: $text-secondary;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.quick-login-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quick-login-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
+  &:hover {
+    background: #e9ecef;
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.quick-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  font-size: 24px;
+  color: white;
+
+  &.admin-icon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  &.counselor-icon {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  }
+
+  &.student-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+}
+
+.quick-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 4px;
+}
+
+.quick-username {
+  font-size: 12px;
+  color: $text-tertiary;
 }
 </style>

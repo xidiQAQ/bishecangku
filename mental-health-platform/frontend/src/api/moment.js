@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function publishMoment(data) {
   return request({
-    url: '/api/moments',
+    url: '/moments',
     method: 'post',
     data
   })
@@ -16,7 +16,7 @@ export function publishMoment(data) {
  */
 export function getMomentList(params) {
   return request({
-    url: '/api/moments',
+    url: '/moments',
     method: 'get',
     params
   })
@@ -27,7 +27,7 @@ export function getMomentList(params) {
  */
 export function getMomentDetail(id) {
   return request({
-    url: `/api/moments/${id}`,
+    url: `/moments/${id}`,
     method: 'get'
   })
 }
@@ -37,7 +37,7 @@ export function getMomentDetail(id) {
  */
 export function likeMoment(id) {
   return request({
-    url: `/api/moments/${id}/like`,
+    url: `/moments/${id}/like`,
     method: 'post'
   })
 }
@@ -47,7 +47,7 @@ export function likeMoment(id) {
  */
 export function commentMoment(data) {
   return request({
-    url: '/api/moments/comments',
+    url: '/moments/comments',
     method: 'post',
     data
   })
@@ -58,7 +58,7 @@ export function commentMoment(data) {
  */
 export function getCommentList(momentId) {
   return request({
-    url: `/api/moments/${momentId}/comments`,
+    url: `/moments/${momentId}/comments`,
     method: 'get'
   })
 }
@@ -68,7 +68,7 @@ export function getCommentList(momentId) {
  */
 export function deleteMoment(id) {
   return request({
-    url: `/api/moments/${id}`,
+    url: `/moments/${id}`,
     method: 'delete'
   })
 }

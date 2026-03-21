@@ -147,6 +147,11 @@
   * 违规内容处理
   * 敏感词库维护
 
+角色	用户名	密码	说明
+管理员	admin	admin123	系统管理员
+咨询师	counselor1	admin123	张心理
+咨询师	counselor2	admin123	李咨询
+学生	student1	admin123	测试学生
 【用户管理】
 功能描述：
 - 学生用户管理

@@ -44,7 +44,7 @@
 
           <div class="counselor-rating">
             <el-rate v-model="counselor.rating" disabled show-score />
-            <span class="rating-count">({{ counselor.consultCount }}次咨询)</span>
+            <span class="rating-count">({{ counselor.ratingCount || 0 }}次评价)</span>
           </div>
 
           <div class="counselor-specialty">
@@ -115,7 +115,12 @@ const fetchCounselors = async () => {
         keyword: searchQuery.value || undefined
       }
     })
-    counselors.value = res.data.records || []
+    // 处理specialty字段，将字符串转为数组
+    counselors.value = (res.data.records || []).map(counselor => ({
+      ...counselor,
+      specialty: counselor.specialty ? counselor.specialty.split(',') : [],
+      rating: counselor.rating ? Number(counselor.rating) : 0
+    }))
     total.value = res.data.total || 0
   } catch (error) {
     console.error('获取咨询师失败:', error)
@@ -270,6 +275,7 @@ onMounted(() => {
   margin-bottom: auto;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
