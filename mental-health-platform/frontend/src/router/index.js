@@ -61,6 +61,18 @@ const routes = [
         meta: { title: '心理测评' }
       },
       {
+        path: 'tests/:id',
+        name: 'TestDetail',
+        component: () => import('@/views/student/TestDetail.vue'),
+        meta: { title: '答题' }
+      },
+      {
+        path: 'tests/result/:resultId',
+        name: 'TestResult',
+        component: () => import('@/views/student/TestResult.vue'),
+        meta: { title: '测试结果' }
+      },
+      {
         path: 'test-history',
         name: 'TestHistory',
         component: () => import('@/views/student/TestHistory.vue'),
@@ -182,12 +194,23 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - 心理健康平台`
+  }
+  
+  // 如果有token但访问的是需要认证的页面，验证token是否有效
+  if (userStore.token && to.meta.requiresAuth) {
+    // 检查userInfo是否完整，如果不完整说明token可能无效
+    if (!userStore.userInfo || !userStore.userInfo.userType) {
+      // token无效，清除并跳转到登录页
+      userStore.logout()
+      next('/login')
+      return
+    }
   }
   
   // 检查是否需要登录

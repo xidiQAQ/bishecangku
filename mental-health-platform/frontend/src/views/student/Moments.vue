@@ -73,6 +73,10 @@
             <el-icon><ChatDotRound /></el-icon>
             <span>{{ moment.commentCount }}</span>
           </div>
+          <div class="action-btn report-btn" @click="reportMoment(moment.id)">
+            <el-icon><Warning /></el-icon>
+            <span>举报</span>
+          </div>
         </div>
 
         <!-- 评论区 -->
@@ -121,6 +125,26 @@
         @current-change="fetchMoments"
       />
     </div>
+
+    <!-- 举报对话框 -->
+    <el-dialog v-model="reportDialogVisible" title="举报树洞" width="500px">
+      <el-form :model="reportForm" :rules="reportRules" ref="reportFormRef">
+        <el-form-item label="举报原因" prop="reason">
+          <el-input
+            v-model="reportForm.reason"
+            type="textarea"
+            :rows="4"
+            placeholder="请详细描述举报原因"
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="reportDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitReport">提交</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -132,7 +156,8 @@ import {
   StarFilled,
   ChatDotRound,
   MoreFilled,
-  Delete
+  Delete,
+  Warning
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
@@ -156,6 +181,19 @@ const expandedMoments = ref([])
 const comments = reactive({})
 const commentInputs = reactive({})
 const loadingComments = reactive({})
+
+const reportDialogVisible = ref(false)
+const reportFormRef = ref(null)
+const reportForm = reactive({
+  momentId: null,
+  reason: ''
+})
+const reportRules = {
+  reason: [
+    { required: true, message: '请输入举报原因', trigger: 'blur' },
+    { min: 10, message: '请详细描述举报原因（至少10个字）', trigger: 'blur' }
+  ]
+}
 
 const fetchMoments = async () => {
   try {
@@ -272,6 +310,32 @@ const deleteMoment = async (momentId) => {
     if (error !== 'cancel') {
       console.error('删除失败:', error)
       ElMessage.error('删除失败')
+    }
+  }
+}
+
+const reportMoment = (momentId) => {
+  reportForm.momentId = momentId
+  reportForm.reason = ''
+  reportDialogVisible.value = true
+}
+
+const submitReport = async () => {
+  try {
+    await reportFormRef.value.validate()
+    
+    await request.post(`/moments/${reportForm.momentId}/report`, null, {
+      params: {
+        reason: reportForm.reason
+      }
+    })
+    
+    ElMessage.success('举报成功，我们会尽快处理')
+    reportDialogVisible.value = false
+  } catch (error) {
+    if (error !== false) {
+      console.error('举报失败:', error)
+      ElMessage.error(error.message || '举报失败')
     }
   }
 }
@@ -417,6 +481,10 @@ onMounted(() => {
 
   &:hover {
     color: $primary-color;
+  }
+
+  &.report-btn:hover {
+    color: #f56c6c;
   }
 
   .el-icon {

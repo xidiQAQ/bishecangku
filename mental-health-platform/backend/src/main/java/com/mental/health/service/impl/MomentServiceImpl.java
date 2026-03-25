@@ -8,11 +8,12 @@ import com.mental.health.common.utils.AnonymousIdUtil;
 import com.mental.health.common.utils.SensitiveWordUtil;
 import com.mental.health.dto.MomentCommentDTO;
 import com.mental.health.dto.MomentDTO;
-import com.mental.health.entity.Moment;
-import com.mental.health.entity.MomentComment;
-import com.mental.health.entity.SensitiveWord;
+import com.mental.health.entity.*;
 import com.mental.health.mapper.MomentCommentMapper;
 import com.mental.health.mapper.MomentMapper;
+import com.mental.health.mapper.MomentLikeMapper;
+import com.mental.health.mapper.MomentReportMapper;
+import com.mental.health.mapper.MomentCommentLikeMapper;
 import com.mental.health.mapper.SensitiveWordMapper;
 import com.mental.health.service.MomentService;
 import com.mental.health.vo.MomentCommentVO;
@@ -24,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +37,9 @@ public class MomentServiceImpl implements MomentService {
     private final MomentMapper momentMapper;
     private final MomentCommentMapper commentMapper;
     private final SensitiveWordMapper sensitiveWordMapper;
+    private final MomentLikeMapper momentLikeMapper;
+    private final MomentReportMapper momentReportMapper;
+    private final MomentCommentLikeMapper commentLikeMapper;
     private final ObjectMapper objectMapper;
 
     /**
@@ -156,28 +158,7 @@ public class MomentServiceImpl implements MomentService {
         voPage.setTotal(momentPage.getTotal());
         
         List<MomentVO> voList = momentPage.getRecords().stream().map(moment -> {
-            MomentVO vo = new MomentVO();
-            vo.setId(moment.getId());
-            vo.setAnonymousId(moment.getAnonymousId());
-            vo.setContent(moment.getContent());
-            
-            if (moment.getImageUrls() != null && !moment.getImageUrls().isEmpty()) {
-                try {
-                    List<String> urls = objectMapper.readValue(
-                        moment.getImageUrls(), 
-                        new TypeReference<List<String>>() {}
-                    );
-                    vo.setImageUrls(urls);
-                } catch (Exception e) {
-                    log.error("解析图片URL失败", e);
-                }
-            }
-            
-            vo.setLikeCount(moment.getLikeCount());
-            vo.setCommentCount(moment.getCommentCount());
-            vo.setAuditStatus(moment.getAuditStatus());
-            vo.setPublishTime(formatPublishTime(moment.getCreatedAt().toString()));
-            
+            MomentVO vo = convertToVO(moment, userId);
             return vo;
         }).collect(Collectors.toList());
         
@@ -192,29 +173,7 @@ public class MomentServiceImpl implements MomentService {
             throw new RuntimeException("树洞不存在");
         }
         
-        MomentVO vo = new MomentVO();
-        vo.setId(moment.getId());
-        vo.setAnonymousId(moment.getAnonymousId());
-        vo.setContent(moment.getContent());
-        
-        if (moment.getImageUrls() != null && !moment.getImageUrls().isEmpty()) {
-            try {
-                List<String> urls = objectMapper.readValue(
-                    moment.getImageUrls(), 
-                    new TypeReference<List<String>>() {}
-                );
-                vo.setImageUrls(urls);
-            } catch (Exception e) {
-                log.error("解析图片URL失败", e);
-            }
-        }
-        
-        vo.setLikeCount(moment.getLikeCount());
-        vo.setCommentCount(moment.getCommentCount());
-        vo.setAuditStatus(moment.getAuditStatus());
-        vo.setPublishTime(formatPublishTime(moment.getCreatedAt().toString()));
-        
-        return vo;
+        return convertToVO(moment, userId);
     }
 
     @Override
@@ -225,9 +184,25 @@ public class MomentServiceImpl implements MomentService {
             throw new RuntimeException("树洞不存在");
         }
         
-        // 简化实现：直接增加点赞数
-        // 实际项目中应该创建点赞记录表，防止重复点赞
-        moment.setLikeCount(moment.getLikeCount() + 1);
+        // 检查是否已点赞
+        LambdaQueryWrapper<MomentLike> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MomentLike::getMomentId, momentId)
+                .eq(MomentLike::getUserId, userId);
+        MomentLike existingLike = momentLikeMapper.selectOne(wrapper);
+        
+        if (existingLike != null) {
+            // 已点赞，取消点赞
+            momentLikeMapper.deleteById(existingLike.getId());
+            moment.setLikeCount(Math.max(0, moment.getLikeCount() - 1));
+        } else {
+            // 未点赞，添加点赞
+            MomentLike like = new MomentLike();
+            like.setMomentId(momentId);
+            like.setUserId(userId);
+            momentLikeMapper.insert(like);
+            moment.setLikeCount(moment.getLikeCount() + 1);
+        }
+        
         momentMapper.updateById(moment);
     }
 
@@ -293,7 +268,25 @@ public class MomentServiceImpl implements MomentService {
             throw new RuntimeException("评论不存在");
         }
         
-        comment.setLikeCount(comment.getLikeCount() + 1);
+        // 检查是否已点赞
+        LambdaQueryWrapper<MomentCommentLike> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MomentCommentLike::getCommentId, commentId)
+                .eq(MomentCommentLike::getUserId, userId);
+        MomentCommentLike existingLike = commentLikeMapper.selectOne(wrapper);
+        
+        if (existingLike != null) {
+            // 已点赞，取消点赞
+            commentLikeMapper.deleteById(existingLike.getId());
+            comment.setLikeCount(Math.max(0, comment.getLikeCount() - 1));
+        } else {
+            // 未点赞，添加点赞
+            MomentCommentLike like = new MomentCommentLike();
+            like.setCommentId(commentId);
+            like.setUserId(userId);
+            commentLikeMapper.insert(like);
+            comment.setLikeCount(comment.getLikeCount() + 1);
+        }
+        
         commentMapper.updateById(comment);
     }
 
@@ -310,6 +303,77 @@ public class MomentServiceImpl implements MomentService {
         }
         
         momentMapper.deleteById(momentId);
+    }
+
+    @Override
+    @Transactional
+    public void reportMoment(Long momentId, Long userId, String reason) {
+        // 检查树洞是否存在
+        Moment moment = momentMapper.selectById(momentId);
+        if (moment == null) {
+            throw new RuntimeException("树洞不存在");
+        }
+        
+        // 检查是否已举报过
+        LambdaQueryWrapper<MomentReport> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MomentReport::getMomentId, momentId)
+                .eq(MomentReport::getReporterId, userId)
+                .eq(MomentReport::getStatus, 0);
+        long count = momentReportMapper.selectCount(wrapper);
+        
+        if (count > 0) {
+            throw new RuntimeException("您已举报过该树洞，请等待处理");
+        }
+        
+        // 创建举报记录
+        MomentReport report = new MomentReport();
+        report.setMomentId(momentId);
+        report.setReporterId(userId);
+        report.setReason(reason);
+        report.setStatus(0);
+        
+        momentReportMapper.insert(report);
+    }
+
+    /**
+     * 转换Moment实体为VO，包含用户相关状态
+     */
+    private MomentVO convertToVO(Moment moment, Long userId) {
+        MomentVO vo = new MomentVO();
+        vo.setId(moment.getId());
+        vo.setAnonymousId(moment.getAnonymousId());
+        vo.setContent(moment.getContent());
+        
+        if (moment.getImageUrls() != null && !moment.getImageUrls().isEmpty()) {
+            try {
+                List<String> urls = objectMapper.readValue(
+                    moment.getImageUrls(), 
+                    new TypeReference<List<String>>() {}
+                );
+                vo.setImageUrls(urls);
+            } catch (Exception e) {
+                log.error("解析图片URL失败", e);
+            }
+        }
+        
+        vo.setLikeCount(moment.getLikeCount());
+        vo.setCommentCount(moment.getCommentCount());
+        vo.setAuditStatus(moment.getAuditStatus());
+        vo.setPublishTime(formatPublishTime(moment.getCreatedAt().toString()));
+        
+        // 检查是否是当前用户的树洞
+        vo.setIsMine(moment.getUserId().equals(userId));
+        
+        // 检查当前用户是否已点赞
+        if (userId != null) {
+            LambdaQueryWrapper<MomentLike> likeWrapper = new LambdaQueryWrapper<>();
+            likeWrapper.eq(MomentLike::getMomentId, moment.getId())
+                    .eq(MomentLike::getUserId, userId);
+            long likeCount = momentLikeMapper.selectCount(likeWrapper);
+            vo.setIsLiked(likeCount > 0);
+        }
+        
+        return vo;
     }
 
     /**

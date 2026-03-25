@@ -116,11 +116,16 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Page<MomentVO> getPendingMoments(Integer pageNum, Integer pageSize) {
+        return getMomentsByAuditStatus(0, pageNum, pageSize);
+    }
+
+    @Override
+    public Page<MomentVO> getMomentsByAuditStatus(Integer auditStatus, Integer pageNum, Integer pageSize) {
         Page<Moment> page = new Page<>(pageNum, pageSize);
         
         LambdaQueryWrapper<Moment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Moment::getAuditStatus, 0)
-                .orderByAsc(Moment::getCreatedAt);
+        wrapper.eq(Moment::getAuditStatus, auditStatus)
+                .orderByDesc(Moment::getCreatedAt);
         
         Page<Moment> momentPage = momentMapper.selectPage(page, wrapper);
         
@@ -148,6 +153,7 @@ public class AdminServiceImpl implements AdminService {
             vo.setLikeCount(moment.getLikeCount());
             vo.setCommentCount(moment.getCommentCount());
             vo.setAuditStatus(moment.getAuditStatus());
+            vo.setAuditReason(moment.getAuditReason());
             vo.setPublishTime(moment.getCreatedAt().toString());
             
             return vo;

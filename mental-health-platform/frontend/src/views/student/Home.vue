@@ -165,28 +165,28 @@ const quickItems = [
     title: '心理科普',
     desc: '了解心理健康知识',
     icon: Document,
-    color: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+    color: 'linear-gradient(135deg, #A8D8EA 0%, #7DD3C0 100%)',
     path: '/student/articles'
   },
   {
     title: '咨询预约',
     desc: '预约专业心理咨询',
     icon: Calendar,
-    color: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+    color: 'linear-gradient(135deg, #FF6B9D 0%, #FFA07A 100%)',
     path: '/student/counselors'
   },
   {
     title: '心理测试',
     desc: '了解自己的心理状态',
     icon: DataAnalysis,
-    color: 'linear-gradient(135deg, #06b6d4 0%, #10b981 100%)',
+    color: 'linear-gradient(135deg, #7DD3C0 0%, #A8D8EA 100%)',
     path: '/student/tests'
   },
   {
     title: '心灵树洞',
     desc: '匿名分享你的心情',
     icon: ChatDotRound,
-    color: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+    color: 'linear-gradient(135deg, #FFA07A 0%, #FFB84D 100%)',
     path: '/student/moments'
   }
 ]
@@ -262,12 +262,26 @@ onMounted(() => {
 }
 
 .welcome-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: $gradient-primary;
   border-radius: $radius-xl;
   padding: 60px;
   margin-bottom: $spacing-xl;
   color: white;
   box-shadow: $shadow-xl;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(60px);
+  }
 }
 
 .banner-content {
@@ -521,12 +535,13 @@ onMounted(() => {
 }
 
 .tips-card {
-  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  background: linear-gradient(135deg, #FFF5E1 0%, #FFE5B4 100%);
   border-radius: $radius-lg;
   padding: $spacing-xl;
   display: flex;
   gap: $spacing-lg;
   box-shadow: $shadow-md;
+  border: 1px solid rgba(255, 184, 77, 0.2);
 }
 
 .tips-icon {

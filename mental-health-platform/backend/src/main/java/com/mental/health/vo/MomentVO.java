@@ -38,5 +38,8 @@ public class MomentVO {
     private String publishTime;
 
     @ApiModelProperty("是否已点赞")
-    private Boolean liked = false;
+    private Boolean isLiked = false;
+
+    @ApiModelProperty("是否是我的树洞")
+    private Boolean isMine = false;
 }

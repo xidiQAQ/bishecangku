@@ -54,6 +54,16 @@ public class AdminController {
         return Result.success(page);
     }
 
+    @ApiOperation("获取树洞列表（按审核状态）")
+    @GetMapping("/moments")
+    public Result<Page<MomentVO>> getMomentsByAuditStatus(
+            @RequestParam Integer auditStatus,
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size) {
+        Page<MomentVO> page = adminService.getMomentsByAuditStatus(auditStatus, current, size);
+        return Result.success(page);
+    }
+
     @ApiOperation("审核树洞")
     @PutMapping("/moments/{momentId}/audit")
     public Result<Void> auditMoment(

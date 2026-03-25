@@ -95,4 +95,14 @@ public class MomentController {
         momentService.deleteMoment(momentId, userId);
         return Result.success();
     }
+
+    @ApiOperation("举报树洞")
+    @PostMapping("/{momentId}/report")
+    public Result<Void> reportMoment(
+            @PathVariable Long momentId,
+            @RequestHeader("userId") Long userId,
+            @RequestParam String reason) {
+        momentService.reportMoment(momentId, userId, reason);
+        return Result.success();
+    }
 }

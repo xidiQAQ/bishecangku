@@ -20,7 +20,7 @@ export default {
   
   // 获取待审核树洞
   getPendingMoments(params) {
-    return request.get('/admin/moments/pending', { params })
+    return request.get('/admin/moments', { params })
   },
   
   // 审核树洞

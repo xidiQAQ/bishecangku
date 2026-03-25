@@ -29,6 +29,11 @@ public interface AdminService {
     Page<MomentVO> getPendingMoments(Integer pageNum, Integer pageSize);
 
     /**
+     * 获取树洞列表（按审核状态）
+     */
+    Page<MomentVO> getMomentsByAuditStatus(Integer auditStatus, Integer pageNum, Integer pageSize);
+
+    /**
      * 审核树洞
      */
     void auditMoment(Long momentId, Long adminId, Integer auditStatus, String auditReason);

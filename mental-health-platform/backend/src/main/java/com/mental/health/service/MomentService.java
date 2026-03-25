@@ -51,6 +51,11 @@ public interface MomentService {
     void deleteMoment(Long momentId, Long userId);
 
     /**
+     * 举报树洞
+     */
+    void reportMoment(Long momentId, Long userId, String reason);
+
+    /**
      * 初始化敏感词库
      */
     void initSensitiveWords();
