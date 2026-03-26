@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user', () => {
   const refreshToken = ref(localStorage.getItem('refreshToken') || '')
   const userId = ref(localStorage.getItem('userId') || '')
   const userInfo = ref(JSON.parse(localStorage.getItem('userInfo') || '{}'))
+  const unreadCount = ref(0) // 未读通知数量
 
   // 设置用户信息
   const setUserInfo = (info) => {
@@ -31,6 +32,11 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('userId', id)
   }
 
+  // 设置未读通知数量
+  const setUnreadCount = (count) => {
+    unreadCount.value = count
+  }
+
   // 登录
   const login = (loginData) => {
     setToken(loginData.token)
@@ -45,6 +51,7 @@ export const useUserStore = defineStore('user', () => {
     refreshToken.value = ''
     userId.value = ''
     userInfo.value = {}
+    unreadCount.value = 0
     localStorage.removeItem('token')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('userId')
@@ -66,10 +73,12 @@ export const useUserStore = defineStore('user', () => {
     refreshToken,
     userId,
     userInfo,
+    unreadCount,
     setUserInfo,
     setToken,
     setRefreshToken,
     setUserId,
+    setUnreadCount,
     login,
     logout,
     isLogin,

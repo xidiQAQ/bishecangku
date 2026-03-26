@@ -1,66 +1,90 @@
 <template>
-  <div class="login-container">
-    <!-- 背景装饰 -->
-    <div class="bg-decoration">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
-    </div>
+  <div class="login-page">
+    <div class="login-wrapper">
+      <!-- 左侧品牌区 -->
+      <div class="brand-side">
+        <div class="brand-container">
+          <!-- Logo和标题 -->
+          <div class="brand-header">
+            <div class="logo-circle">
+              <el-icon><Sunny /></el-icon>
+            </div>
+            <h1 class="brand-name">心理健康平台</h1>
+            <p class="brand-slogan">专业心理服务 · 守护心灵健康</p>
+          </div>
 
-    <!-- 登录卡片 -->
-    <div class="login-card">
-      <div class="login-left">
-        <div class="welcome-content">
-          <h1 class="welcome-title">
-            <span class="gradient-text">心理健康</span>
-            <br />关怀平台
-          </h1>
-          <p class="welcome-subtitle">
-            为每一个需要倾听的心灵<br />提供温暖的港湾
-          </p>
-          <div class="feature-list">
-            <div class="feature-item">
-              <el-icon class="feature-icon"><ChatDotRound /></el-icon>
-              <span>专业心理咨询</span>
+          <!-- 特色列表 -->
+          <div class="features-list">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <el-icon><ChatDotRound /></el-icon>
+              </div>
+              <div class="feature-text">
+                <h3>专业心理咨询</h3>
+                <p>50+认证咨询师在线服务</p>
+              </div>
             </div>
-            <div class="feature-item">
-              <el-icon class="feature-icon"><Calendar /></el-icon>
-              <span>便捷在线预约</span>
+
+            <div class="feature-card">
+              <div class="feature-icon">
+                <el-icon><DataAnalysis /></el-icon>
+              </div>
+              <div class="feature-text">
+                <h3>科学心理测评</h3>
+                <p>多维度专业量表评估</p>
+              </div>
             </div>
-            <div class="feature-item">
-              <el-icon class="feature-icon"><Document /></el-icon>
-              <span>心理健康测评</span>
+
+            <div class="feature-card">
+              <div class="feature-icon">
+                <el-icon><Clock /></el-icon>
+              </div>
+              <div class="feature-text">
+                <h3>24小时在线支持</h3>
+                <p>随时随地获得帮助</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 底部装饰 -->
+          <div class="brand-footer">
+            <div class="stats-item">
+              <div class="stats-number">1,234+</div>
+              <div class="stats-label">成功案例</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-number">4.9</div>
+              <div class="stats-label">用户评分</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="login-right">
-        <div class="login-form-wrapper">
-          <h2 class="form-title">{{ isLogin ? '欢迎回来' : '创建账号' }}</h2>
-          <p class="form-subtitle">{{ isLogin ? '登录您的账号' : '开始您的心理健康之旅' }}</p>
+      <!-- 右侧表单区 -->
+      <div class="form-side">
+        <div class="form-container">
+          <!-- 表单头部 -->
+          <div class="form-header">
+            <h2 class="form-title">{{ isLogin ? '欢迎回来' : '创建账号' }}</h2>
+            <p class="form-desc">{{ isLogin ? '登录以继续使用服务' : '开始您的心理健康之旅' }}</p>
+          </div>
 
-          <el-form
-            ref="formRef"
-            :model="form"
-            :rules="rules"
-            class="login-form"
-            @submit.prevent="handleSubmit"
-          >
+          <!-- 表单内容 -->
+          <el-form ref="formRef" :model="form" :rules="rules" class="login-form">
             <el-form-item prop="username">
-              <el-input
-                v-model="form.username"
-                placeholder="用户名"
+              <el-input 
+                v-model="form.username" 
+                placeholder="请输入用户名" 
                 size="large"
                 :prefix-icon="User"
               />
             </el-form-item>
 
             <el-form-item prop="password">
-              <el-input
-                v-model="form.password"
-                type="password"
-                placeholder="密码"
+              <el-input 
+                v-model="form.password" 
+                type="password" 
+                placeholder="请输入密码" 
                 size="large"
                 :prefix-icon="Lock"
                 show-password
@@ -68,36 +92,36 @@
             </el-form-item>
 
             <el-form-item v-if="!isLogin" prop="realName">
-              <el-input
-                v-model="form.realName"
-                placeholder="真实姓名"
+              <el-input 
+                v-model="form.realName" 
+                placeholder="请输入真实姓名" 
                 size="large"
                 :prefix-icon="User"
               />
             </el-form-item>
 
             <el-form-item v-if="!isLogin" prop="phone">
-              <el-input
-                v-model="form.phone"
-                placeholder="手机号"
+              <el-input 
+                v-model="form.phone" 
+                placeholder="请输入手机号" 
                 size="large"
                 :prefix-icon="Phone"
               />
             </el-form-item>
 
             <el-form-item v-if="!isLogin" prop="email">
-              <el-input
-                v-model="form.email"
-                placeholder="邮箱"
+              <el-input 
+                v-model="form.email" 
+                placeholder="请输入邮箱" 
                 size="large"
                 :prefix-icon="Message"
               />
             </el-form-item>
 
             <el-form-item v-if="!isLogin" prop="userType">
-              <el-select
-                v-model="form.userType"
-                placeholder="选择身份"
+              <el-select 
+                v-model="form.userType" 
+                placeholder="请选择身份" 
                 size="large"
                 style="width: 100%"
               >
@@ -106,58 +130,54 @@
               </el-select>
             </el-form-item>
 
-            <el-button
-              type="primary"
-              size="large"
-              class="submit-btn"
+            <el-button 
+              type="primary" 
+              size="large" 
+              class="submit-button" 
               :loading="loading"
               @click="handleSubmit"
             >
-              {{ isLogin ? '登录' : '注册' }}
+              {{ isLogin ? '登 录' : '注 册' }}
             </el-button>
           </el-form>
 
+          <!-- 表单底部 -->
           <div class="form-footer">
-            <span class="toggle-text">
+            <span class="footer-text">
               {{ isLogin ? '还没有账号？' : '已有账号？' }}
-              <a @click="toggleMode" class="toggle-link">
-                {{ isLogin ? '立即注册' : '立即登录' }}
-              </a>
             </span>
+            <a class="footer-link" @click="toggleMode">
+              {{ isLogin ? '立即注册' : '立即登录' }}
+            </a>
           </div>
 
           <!-- 快捷登录 -->
           <div v-if="isLogin" class="quick-login">
-            <div class="quick-login-title">快捷登录</div>
-            <div class="quick-login-grid">
-              <div class="quick-login-card" @click="quickLogin('admin', 'admin123')">
-                <div class="quick-icon admin-icon">
+            <div class="quick-divider">
+              <span>快速体验</span>
+            </div>
+            
+            <div class="quick-buttons">
+              <button class="quick-btn" @click="quickLogin('admin', 'admin123')">
+                <div class="quick-icon admin">
                   <el-icon><Setting /></el-icon>
                 </div>
-                <div class="quick-name">管理员</div>
-                <div class="quick-username">admin</div>
-              </div>
-              <div class="quick-login-card" @click="quickLogin('counselor1', 'admin123')">
-                <div class="quick-icon counselor-icon">
+                <span>管理员</span>
+              </button>
+              
+              <button class="quick-btn" @click="quickLogin('counselor1', 'admin123')">
+                <div class="quick-icon counselor">
                   <el-icon><User /></el-icon>
                 </div>
-                <div class="quick-name">张心理</div>
-                <div class="quick-username">counselor1</div>
-              </div>
-              <div class="quick-login-card" @click="quickLogin('counselor2', 'admin123')">
-                <div class="quick-icon counselor-icon">
+                <span>咨询师</span>
+              </button>
+              
+              <button class="quick-btn" @click="quickLogin('student1', 'admin123')">
+                <div class="quick-icon student">
                   <el-icon><User /></el-icon>
                 </div>
-                <div class="quick-name">李咨询</div>
-                <div class="quick-username">counselor2</div>
-              </div>
-              <div class="quick-login-card" @click="quickLogin('student1', 'admin123')">
-                <div class="quick-icon student-icon">
-                  <el-icon><User /></el-icon>
-                </div>
-                <div class="quick-name">测试学生</div>
-                <div class="quick-username">student1</div>
-              </div>
+                <span>学生</span>
+              </button>
             </div>
           </div>
         </div>
@@ -170,7 +190,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Phone, Message, ChatDotRound, Calendar, Document, Setting } from '@element-plus/icons-vue'
+import { User, Lock, Phone, Message, Setting, Sunny, ChatDotRound, DataAnalysis, Clock } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import request from '@/utils/request'
 
@@ -199,9 +219,7 @@ const rules = {
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
   ],
-  realName: [
-    { required: true, message: '请输入真实姓名', trigger: 'blur' }
-  ],
+  realName: [{ required: true, message: '请输入真实姓名', trigger: 'blur' }],
   phone: [
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
@@ -210,9 +228,7 @@ const rules = {
     { required: true, message: '请输入邮箱', trigger: 'blur' },
     { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
   ],
-  userType: [
-    { required: true, message: '请选择身份', trigger: 'change' }
-  ]
+  userType: [{ required: true, message: '请选择身份', trigger: 'change' }]
 }
 
 const toggleMode = () => {
@@ -226,7 +242,6 @@ const handleSubmit = async () => {
     loading.value = true
 
     if (isLogin.value) {
-      // 登录
       const res = await request.post('/auth/login', {
         username: form.username,
         password: form.password
@@ -239,21 +254,13 @@ const handleSubmit = async () => {
           userId: res.data.id,
           userInfo: res.data
         })
-
         ElMessage.success('登录成功')
-
-        // 根据用户类型跳转
         const userType = res.data.userType
-        if (userType === 1) {
-          router.push('/student/home')
-        } else if (userType === 2) {
-          router.push('/counselor/dashboard')
-        } else if (userType === 3) {
-          router.push('/admin/dashboard')
-        }
+        if (userType === 1) router.push('/student/home')
+        else if (userType === 2) router.push('/counselor/dashboard')
+        else if (userType === 3) router.push('/admin/dashboard')
       }
     } else {
-      // 注册
       const res = await request.post('/auth/register', {
         username: form.username,
         password: form.password,
@@ -262,7 +269,6 @@ const handleSubmit = async () => {
         email: form.email,
         userType: form.userType
       })
-
       if (res.code === 200) {
         ElMessage.success('注册成功，请登录')
         isLogin.value = true
@@ -276,36 +282,23 @@ const handleSubmit = async () => {
   }
 }
 
-// 快捷登录
 const quickLogin = async (username, password) => {
   form.username = username
   form.password = password
-  
   loading.value = true
   try {
-    const res = await request.post('/auth/login', {
-      username,
-      password
-    })
-
+    const res = await request.post('/auth/login', { username, password })
     if (res.code === 200) {
       userStore.login({
         token: res.data.token,
         userId: res.data.id,
         userInfo: res.data
       })
-
       ElMessage.success('登录成功')
-
-      // 根据用户类型跳转
       const userType = res.data.userType
-      if (userType === 1) {
-        router.push('/student/home')
-      } else if (userType === 2) {
-        router.push('/counselor/dashboard')
-      } else if (userType === 3) {
-        router.push('/admin/dashboard')
-      }
+      if (userType === 1) router.push('/student/home')
+      else if (userType === 2) router.push('/counselor/dashboard')
+      else if (userType === 3) router.push('/admin/dashboard')
     }
   } catch (error) {
     console.error('快捷登录失败:', error)
@@ -321,307 +314,791 @@ const quickLogin = async (username, password) => {
 .login-container {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  position: relative;
-  overflow: hidden;
-  padding: 20px;
+  background: $bg-color;
 }
 
-.bg-decoration {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+// 左侧装饰区
+.left-section {
+  flex: 1;
+  background: $gradient-dark;
+  position: relative;
   overflow: hidden;
-
-  .circle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $spacing-4xl;
+  
+  &::before {
+    content: '';
     position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    animation: float 20s infinite ease-in-out;
+    top: -50%;
+    left: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+}
 
-    &.circle-1 {
-      width: 300px;
-      height: 300px;
-      top: -100px;
-      left: -100px;
-      animation-delay: 0s;
-    }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
 
-    &.circle-2 {
-      width: 200px;
-      height: 200px;
-      bottom: -50px;
-      right: 10%;
-      animation-delay: 5s;
-    }
+.decoration-content {
+  position: relative;
+  z-index: 1;
+}
 
-    &.circle-3 {
-      width: 150px;
-      height: 150px;
-      top: 50%;
-      right: -50px;
-      animation-delay: 10s;
-    }
+.floating-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-xl;
+  padding: $spacing-lg $spacing-xl;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+  animation: float 6s ease-in-out infinite;
+  
+  &.card-1 {
+    animation-delay: 0s;
+    margin-left: 0;
+  }
+  
+  &.card-2 {
+    animation-delay: 2s;
+    margin-left: $spacing-3xl;
+  }
+  
+  &.card-3 {
+    animation-delay: 4s;
+    margin-left: $spacing-2xl;
   }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.login-card {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  width: 100%;
-  max-width: 1000px;
-  min-height: 600px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
-
-.login-left {
-  flex: 1;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  padding: 60px;
+.card-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-md;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 24px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.card-info {
   color: white;
 }
 
-.welcome-content {
-  max-width: 400px;
+.card-number {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  margin-bottom: 4px;
 }
 
-.welcome-title {
-  font-size: 42px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 20px;
-
-  .gradient-text {
-    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.card-label {
+  font-size: $font-size-sm;
+  opacity: 0.8;
 }
 
-.welcome-subtitle {
-  font-size: 18px;
-  line-height: 1.6;
-  opacity: 0.9;
-  margin-bottom: 40px;
+.brand-area {
+  position: relative;
+  z-index: 1;
+  color: white;
 }
 
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.feature-item {
+.logo-box {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 16px;
-
-  .feature-icon {
-    font-size: 24px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px;
-    border-radius: 8px;
-  }
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
 }
 
-.login-right {
-  flex: 1;
-  padding: 60px;
+.logo-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-lg;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 28px;
 }
 
-.login-form-wrapper {
+.brand-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+}
+
+.brand-desc {
+  font-size: $font-size-md;
+  opacity: 0.8;
+  margin-left: 70px;
+}
+
+// 右侧表单区
+.right-section {
+  width: 520px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-3xl;
+}
+
+.form-box {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+}
+
+// Tab切换
+.tab-switcher {
+  position: relative;
+  display: flex;
+  background: $bg-soft;
+  border-radius: $radius-lg;
+  padding: 4px;
+  margin-bottom: $spacing-3xl;
+}
+
+.tab-btn {
+  flex: 1;
+  text-align: center;
+  padding: $spacing-md;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: $transition-fast;
+  position: relative;
+  z-index: 2;
+  
+  &.active {
+    color: $text-primary;
+  }
+}
+
+.tab-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+  z-index: 1;
+  
+  &.right {
+    transform: translateX(100%);
+  }
+}
+
+// 表单标题
+.form-title-area {
+  margin-bottom: $spacing-xl;
 }
 
 .form-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
   color: $text-primary;
-  margin-bottom: 8px;
+  margin-bottom: $spacing-sm;
+  letter-spacing: -0.02em;
 }
 
 .form-subtitle {
-  font-size: 16px;
+  font-size: $font-size-md;
   color: $text-secondary;
-  margin-bottom: 32px;
 }
 
+// 表单样式
 .login-form {
   .el-form-item {
-    margin-bottom: 20px;
+    margin-bottom: $spacing-lg;
   }
+}
 
+.custom-input {
+  position: relative;
+  
+  .input-prefix {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: $text-tertiary;
+    z-index: 1;
+  }
+  
   :deep(.el-input__wrapper) {
-    border-radius: 12px;
-    padding: 12px 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding-left: 48px;
+    border-radius: $radius-lg;
+    border: 2px solid $border-light;
+    box-shadow: none;
+    transition: $transition-base;
+    
+    &:hover {
+      border-color: $border-color;
+    }
+    
+    &.is-focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
   }
+  
+  :deep(.el-input__inner) {
+    font-size: $font-size-md;
+  }
+}
 
-  :deep(.el-select .el-input__wrapper) {
-    padding: 12px 16px;
-  }
+:deep(.el-select .el-input__wrapper) {
+  padding-left: 16px;
 }
 
 .submit-btn {
   width: 100%;
-  height: 48px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  height: 52px;
+  border-radius: $radius-lg;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  background: $gradient-cool;
   border: none;
-  margin-top: 12px;
-  transition: all 0.3s ease;
-
+  margin-top: $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  transition: $transition-base;
+  
+  .btn-icon {
+    transition: $transition-fast;
+  }
+  
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
+    box-shadow: $shadow-hover;
+    
+    .btn-icon {
+      transform: translateX(4px);
+    }
+  }
+}
+
+// 快捷登录
+.quick-login-area {
+  margin-top: $spacing-3xl;
+}
+
+.divider-line {
+  position: relative;
+  text-align: center;
+  margin-bottom: $spacing-xl;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: $border-color;
+  }
+  
+  span {
+    position: relative;
+    background: white;
+    padding: 0 $spacing-md;
+    color: $text-tertiary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.quick-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+}
+
+.quick-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: $bg-soft;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: $transition-base;
+  border: 2px solid transparent;
+  
+  &:hover {
+    background: white;
+    border-color: $primary-color;
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+  
+  span {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+}
+
+.quick-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  
+  &.admin-bg {
+    background: linear-gradient(135deg, #64748B 0%, #475569 100%);
+  }
+  
+  &.counselor-bg {
+    background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%);
+  }
+  
+  &.student-bg {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  }
+}
+
+// 响应式
+@media (max-width: 968px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .left-section {
+    min-height: 300px;
+    padding: $spacing-xl;
+  }
+  
+  .floating-card {
+    &.card-2, &.card-3 {
+      margin-left: 0;
+    }
+  }
+  
+  .right-section {
+    width: 100%;
+  }
+}
+</style>
+
+
+<style scoped lang="scss">
+@import '@/assets/styles/variables.scss';
+
+.login-page {
+  min-height: 100vh;
+  background: $bg-green-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.login-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 650px;
+  background: white;
+  border-radius: $radius-3xl;
+  box-shadow: $shadow-2xl;
+  overflow: hidden;
+}
+
+// 左侧品牌区
+.brand-side {
+  flex: 1;
+  background: $gradient-green;
+  padding: $spacing-4xl;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: -150px;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+  }
+}
+
+.brand-container {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+}
+
+.brand-header {
+  text-align: center;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-2xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin: 0 auto $spacing-lg;
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.brand-name {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+  letter-spacing: -0.01em;
+}
+
+.brand-slogan {
+  font-size: $font-size-md;
+  opacity: 0.9;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  margin: $spacing-3xl 0;
+}
+
+.feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: $transition-base;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(8px);
+  }
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.feature-text {
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin-bottom: 4px;
+  }
+  
+  p {
+    font-size: $font-size-sm;
+    opacity: 0.9;
+  }
+}
+
+.brand-footer {
+  display: flex;
+  gap: $spacing-3xl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stats-item {
+  flex: 1;
+}
+
+.stats-number {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: 4px;
+}
+
+.stats-label {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+}
+
+// 右侧表单区
+.form-side {
+  width: 480px;
+  padding: $spacing-4xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-header {
+  margin-bottom: $spacing-3xl;
+  text-align: center;
+}
+
+.form-title {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  margin-bottom: $spacing-sm;
+  letter-spacing: -0.02em;
+}
+
+.form-desc {
+  font-size: $font-size-md;
+  color: $text-secondary;
+}
+
+.login-form {
+  .el-form-item {
+    margin-bottom: $spacing-lg;
+  }
+  
+  :deep(.el-input__wrapper) {
+    border-radius: $radius-lg;
+    padding: 14px 16px;
+    border: 2px solid $border-light;
+    box-shadow: none;
+    transition: $transition-base;
+    
+    &:hover {
+      border-color: $border-color;
+    }
+    
+    &.is-focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: $font-size-md;
+  }
+  
+  :deep(.el-select .el-input__wrapper) {
+    padding: 14px 16px;
+  }
+}
+
+.submit-button {
+  width: 100%;
+  height: 52px;
+  border-radius: $radius-lg;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  background: $gradient-green;
+  border: none;
+  margin-top: $spacing-md;
+  letter-spacing: 0.1em;
+  transition: $transition-base;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-hover;
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 }
 
 .form-footer {
-  margin-top: 24px;
+  margin-top: $spacing-xl;
   text-align: center;
+  font-size: $font-size-sm;
 }
 
-.toggle-text {
+.footer-text {
   color: $text-secondary;
-  font-size: 14px;
 }
 
-.toggle-link {
+.footer-link {
   color: $primary-color;
-  font-weight: 600;
+  font-weight: $font-weight-semibold;
   cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease;
-
+  margin-left: 4px;
+  transition: $transition-fast;
+  
   &:hover {
     color: $primary-dark;
     text-decoration: underline;
   }
 }
 
-@media (max-width: 768px) {
-  .login-card {
-    flex-direction: column;
-    max-width: 500px;
-  }
-
-  .login-left {
-    padding: 40px 30px;
-  }
-
-  .login-right {
-    padding: 40px 30px;
-  }
-
-  .welcome-title {
-    font-size: 32px;
-  }
-
-  .form-title {
-    font-size: 28px;
-  }
-}
-
+// 快捷登录
 .quick-login {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  margin-top: $spacing-3xl;
 }
 
-.quick-login-title {
-  font-size: 14px;
-  color: $text-secondary;
-  margin-bottom: 16px;
+.quick-divider {
+  position: relative;
   text-align: center;
-}
-
-.quick-login-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.quick-login-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-
-  &:hover {
-    background: #e9ecef;
-    border-color: $primary-color;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  margin-bottom: $spacing-xl;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: $border-color;
   }
+  
+  span {
+    position: relative;
+    background: white;
+    padding: 0 $spacing-md;
+    color: $text-tertiary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
 
-  &:active {
-    transform: translateY(0);
+.quick-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+}
+
+.quick-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg $spacing-sm;
+  background: $bg-soft;
+  border-radius: $radius-lg;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: $transition-base;
+  
+  &:hover {
+    background: white;
+    border-color: $primary-color;
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+  
+  span {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
   }
 }
 
 .quick-icon {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: $radius-md;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 8px;
   font-size: 24px;
   color: white;
-
-  &.admin-icon {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  
+  &.admin {
+    background: linear-gradient(135deg, #64748B 0%, #475569 100%);
   }
-
-  &.counselor-icon {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  
+  &.counselor {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   }
-
-  &.student-icon {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  &.student {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   }
 }
 
-.quick-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: $text-primary;
-  margin-bottom: 4px;
-}
-
-.quick-username {
-  font-size: 12px;
-  color: $text-tertiary;
+// 响应式
+@media (max-width: 968px) {
+  .login-wrapper {
+    flex-direction: column;
+    max-width: 500px;
+  }
+  
+  .brand-side {
+    padding: $spacing-3xl $spacing-xl;
+  }
+  
+  .features-list {
+    margin: $spacing-xl 0;
+  }
+  
+  .form-side {
+    width: 100%;
+    padding: $spacing-3xl $spacing-xl;
+  }
+  
+  .brand-name {
+    font-size: $font-size-3xl;
+  }
+  
+  .form-title {
+    font-size: $font-size-3xl;
+  }
 }
 </style>

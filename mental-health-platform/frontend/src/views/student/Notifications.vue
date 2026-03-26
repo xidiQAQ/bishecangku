@@ -95,6 +95,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Bell, Calendar, ChatDotRound, InfoFilled } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
 import {
   getNotifications,
   getUnreadCount,
@@ -104,6 +105,7 @@ import {
 } from '@/api/notification'
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const loading = ref(false)
 const activeTab = ref('all')
@@ -132,11 +134,16 @@ const loadNotifications = async () => {
       params.isRead = 1
     }
     
+    console.log('加载通知，参数:', params)
     const res = await getNotifications(params)
-    notifications.value = res.data.records
-    total.value = res.data.total
+    console.log('通知响应:', res)
+    notifications.value = res.data.records || []
+    total.value = res.data.total || 0
   } catch (error) {
-    ElMessage.error('加载通知失败')
+    console.error('加载通知失败，错误详情:', error)
+    ElMessage.error('加载通知失败: ' + (error.message || '未知错误'))
+    notifications.value = []
+    total.value = 0
   } finally {
     loading.value = false
   }
@@ -145,9 +152,14 @@ const loadNotifications = async () => {
 const loadUnreadCount = async () => {
   try {
     const res = await getUnreadCount()
-    unreadCount.value = res.data
+    unreadCount.value = res.data || 0
+    // 同时更新store中的未读数量
+    userStore.setUnreadCount(res.data || 0)
   } catch (error) {
     console.error('加载未读数量失败', error)
+    // 如果接口不存在，设置为0，避免报错
+    unreadCount.value = 0
+    userStore.setUnreadCount(0)
   }
 }
 

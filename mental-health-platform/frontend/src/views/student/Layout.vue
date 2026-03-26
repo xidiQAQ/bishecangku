@@ -106,7 +106,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const userInfo = computed(() => userStore.userInfo)
-const unreadCount = ref(0)
+const unreadCount = computed(() => userStore.unreadCount)
 let pollingTimer = null
 
 const menuItems = [
@@ -132,9 +132,11 @@ onUnmounted(() => {
 const loadUnreadCount = async () => {
   try {
     const res = await getUnreadCount()
-    unreadCount.value = res.data
+    userStore.setUnreadCount(res.data || 0)
   } catch (error) {
     console.error('加载未读通知数量失败', error)
+    // 如果接口不存在，设置为0，避免持续报错
+    userStore.setUnreadCount(0)
   }
 }
 

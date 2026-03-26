@@ -22,7 +22,9 @@
           </div>
         </div>
         <div class="banner-illustration">
-          <img src="https://illustrations.popsy.co/amber/mental-health.svg" alt="心理健康" />
+          <div class="illustration-placeholder">
+            <el-icon :size="120"><Sunny /></el-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -150,7 +152,8 @@ import {
   User,
   View,
   Star,
-  ArrowRight
+  ArrowRight,
+  Sunny
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import request from '@/utils/request'
@@ -165,28 +168,28 @@ const quickItems = [
     title: '心理科普',
     desc: '了解心理健康知识',
     icon: Document,
-    color: 'linear-gradient(135deg, #A8D8EA 0%, #7DD3C0 100%)',
+    color: 'linear-gradient(135deg, #64748B 0%, #475569 100%)',
     path: '/student/articles'
   },
   {
     title: '咨询预约',
     desc: '预约专业心理咨询',
     icon: Calendar,
-    color: 'linear-gradient(135deg, #FF6B9D 0%, #FFA07A 100%)',
+    color: 'linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)',
     path: '/student/counselors'
   },
   {
     title: '心理测试',
     desc: '了解自己的心理状态',
     icon: DataAnalysis,
-    color: 'linear-gradient(135deg, #7DD3C0 0%, #A8D8EA 100%)',
+    color: 'linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%)',
     path: '/student/tests'
   },
   {
     title: '心灵树洞',
     desc: '匿名分享你的心情',
     icon: ChatDotRound,
-    color: 'linear-gradient(135deg, #FFA07A 0%, #FFB84D 100%)',
+    color: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
     path: '/student/moments'
   }
 ]
@@ -278,7 +281,7 @@ onMounted(() => {
     right: -10%;
     width: 500px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 50%;
     filter: blur(60px);
   }
@@ -323,11 +326,26 @@ onMounted(() => {
 .banner-illustration {
   flex-shrink: 0;
   width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  img {
-    width: 100%;
-    height: auto;
-  }
+.illustration-placeholder {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
 
 .quick-access {

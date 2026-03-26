@@ -231,37 +231,37 @@ onMounted(() => {
 
 .test-card-0 {
   .test-icon {
-    background: $gradient-primary;
+    background: $gradient-cool;
   }
   .test-card-bg {
-    background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
   }
 }
 
 .test-card-1 {
   .test-icon {
-    background: $gradient-cool;
+    background: linear-gradient(135deg, #64748B 0%, #475569 100%);
   }
   .test-card-bg {
-    background: radial-gradient(circle, rgba(125, 211, 192, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(100, 116, 139, 0.1) 0%, transparent 70%);
   }
 }
 
 .test-card-2 {
   .test-icon {
-    background: $gradient-warm;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   }
   .test-card-bg {
-    background: radial-gradient(circle, rgba(255, 160, 122, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
   }
 }
 
 .test-card-3 {
   .test-icon {
-    background: linear-gradient(135deg, #A8D8EA 0%, #FFB4D6 100%);
+    background: linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%);
   }
   .test-card-bg {
-    background: radial-gradient(circle, rgba(168, 216, 234, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
   }
 }
 
